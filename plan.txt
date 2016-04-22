@@ -1,0 +1,3 @@
+Een afspraak heeft deelnemers (attendees)
+Een deelnemer is een persoon
+Een persoon heeft één of meerdere rollen
