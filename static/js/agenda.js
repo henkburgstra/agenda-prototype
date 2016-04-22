@@ -1540,9 +1540,10 @@ var agenda = function(data, options) {
 	var stage = new createjs.Stage("c");
 	stage.canvas.width = 1280;
 	stage.canvas.height = 800;
+	return stage;
 };
 
-agenda();
+var stage = agenda();
 
 
 /*
@@ -1556,6 +1557,7 @@ agenda();
    * teken de agenda kaderrand.
 */
 // Lezen JSON
+var outerY = 10.5;	
 var colX = labelWidth + 0.5;
 var colY = outerY + 2;
 for (var d = 0; d < items.dates.length; d++) {
