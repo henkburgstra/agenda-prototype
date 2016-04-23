@@ -1558,6 +1558,9 @@ var stage = agenda();
 */
 // Lezen JSON
 var outerY = 10.5;	
+var outerX = 10.5;
+var innerX = outerX + labelWidth;
+var innerY = outerY + rowHeight;
 var colX = labelWidth + 0.5;
 var colY = outerY + 2;
 for (var d = 0; d < items.dates.length; d++) {
