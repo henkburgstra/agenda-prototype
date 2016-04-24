@@ -1572,6 +1572,81 @@ for (var d = 0; d < items.dates.length; d++) {
 	}
 }
 
+//// header verticaal
+h = new createjs.Shape();
+h.graphics
+	.setStrokeStyle(0.5)
+	.beginStroke("black")
+	.beginFill("#C0A0B0")
+	.rect(outerX + 0.5, outerY + 0.5, labelWidth, 779);
+stage.addChild(h);
+
+// horizontale lijnen (rij scheiding)
+for (var i = 0; i < hours.length; i++) {
+	var hour = hours[i];
+	y = innerY + (rowHeight * i);
+
+	if (hour.officeHours) {
+		var background = '#D0B0C0';
+	}
+	else {
+		var background =  '#C0A0B0';
+	}
+	r = new createjs.Shape();
+	r.graphics
+		.beginFill(background)
+		.rect(outerX + 0.5, y, labelWidth - 1, rowHeight);
+	stage.addChild(r);
+	if (!hour.officeHours) {
+		r = new createjs.Shape();
+		r.graphics
+			.beginFill("#D4DCEC")
+			.rect(innerX + 1, y, 1189, rowHeight);
+		stage.addChild(r);
+	}
+
+	var tijd_x = outerX + 11.5;
+	var tijd_y = y + 4;
+	if (Math.floor(hour.time) == hour.time) {
+		var tijd = hour.time;
+	}
+	else {
+		var tijd = 30;  // TODO: minuten uitrekenen op basis van fractie (fraction2minute)
+	}
+	var font_size = 22;
+	if (tijd == 30) {
+		tijd_x = outerX + 44.5;
+		tijd_y++;
+		font_size = 14;
+	}
+	if (tijd < 10) {
+		tijd_tekst = '0' + tijd;
+	}
+	else {
+		tijd_tekst = '' + tijd;
+	}
+	var l = new createjs.Text(tijd_tekst, font_size + "px Verdana", "black");
+	l.x = tijd_x;
+	l.y = tijd_y;
+	stage.addChild(l);
+	if (tijd != 30) {
+		var l = new createjs.Text('00', "14px Verdana", "black");
+		l.x = outerX + 44.5;
+		l.y = ++tijd_y;
+		stage.addChild(l);
+	}
+	var l = new createjs.Shape();
+    l.graphics
+	.setStrokeStyle(1)
+	.beginStroke("black")
+	.setStrokeDash([2, 3], 0)
+    .moveTo(outerX, y)
+    .lineTo(1270, y)
+    .endStroke();
+    stage.addChild(l);   		
+}
+
+
 
 var kader = new createjs.Shape();
 //kader.graphics
@@ -1590,79 +1665,6 @@ var kader = new createjs.Shape();
 //	.rect(11, 11, 1259, rowHeight);
 //stage.addChild(h);
 
-////// header verticaal
-//h = new createjs.Shape();
-//h.graphics
-//	.setStrokeStyle(0.5)
-//	.beginStroke("black")
-//	.beginFill("#C0A0B0")
-//	.rect(outerX + 0.5, outerY + 0.5, labelWidth, 779);
-//stage.addChild(h);
-
-//// horizontale lijnen (rij scheiding)
-//for (var i = 0; i < hours.length; i++) {
-//	var hour = hours[i];
-//	y = innerY + (rowHeight * i);
-
-//	if (hour.officeHours) {
-//		var background = '#D0B0C0';
-//	}
-//	else {
-//		var background =  '#C0A0B0';
-//	}
-//	r = new createjs.Shape();
-//	r.graphics
-//		.beginFill(background)
-//		.rect(outerX + 0.5, y, labelWidth - 1, rowHeight);
-//	stage.addChild(r);
-//	if (!hour.officeHours) {
-//		r = new createjs.Shape();
-//		r.graphics
-//			.beginFill("#D4DCEC")
-//			.rect(innerX + 1, y, 1189, rowHeight);
-//		stage.addChild(r);
-//	}
-
-//	var tijd_x = outerX + 11.5;
-//	var tijd_y = y + 4;
-//	if (Math.floor(hour.time) == hour.time) {
-//		var tijd = hour.time;
-//	}
-//	else {
-//		var tijd = 30;  // TODO: minuten uitrekenen op basis van fractie (fraction2minute)
-//	}
-//	var font_size = 22;
-//	if (tijd == 30) {
-//		tijd_x = outerX + 44.5;
-//		tijd_y++;
-//		font_size = 14;
-//	}
-//	if (tijd < 10) {
-//		tijd_tekst = '0' + tijd;
-//	}
-//	else {
-//		tijd_tekst = '' + tijd;
-//	}
-//	var l = new createjs.Text(tijd_tekst, font_size + "px Verdana", "black");
-//	l.x = tijd_x;
-//	l.y = tijd_y;
-//	stage.addChild(l);
-//	if (tijd != 30) {
-//		var l = new createjs.Text('00', "14px Verdana", "black");
-//		l.x = outerX + 44.5;
-//		l.y = ++tijd_y;
-//		stage.addChild(l);
-//	}
-//	var l = new createjs.Shape();
-//    l.graphics
-//	.setStrokeStyle(1)
-//	.beginStroke("black")
-//	.setStrokeDash([2, 3], 0)
-//    .moveTo(outerX, y)
-//    .lineTo(1270, y)
-//    .endStroke();
-//    stage.addChild(l);   		
-//}
 
 //// verticale lijnen (kolom scheiding)
 //var endFirstColX = outerX + labelWidth + colWidth
