@@ -1460,7 +1460,7 @@ var afspraakTonen = function(evt) {
 	alert("Afspraak tonen");
 };
 
-var drawColumn = function(resource, x, y, width, height) {
+var createColumn = function(resource, x, y, width, height) {
 	var column = [];
 	// Kolom label
 	var l = new createjs.Text(resource.key, "14px Verdana", "black");
@@ -1538,15 +1538,25 @@ var CalendarOptions = function CalendarOptions(startTime, hours, leftLabel, topL
 	this.topLabel = topLabel;
 };
 
-var agenda = function(data, options) {
+var agenda = function(width, height) {
 	var stage = new createjs.Stage("c");
 	stage.canvas.width = 1280;
 	stage.canvas.height = 800;
 	return stage;
 };
 
-var stage = agenda();
-
+var createColumns = function(items) {
+	var columns = [];
+	for (var d = 0; d < items.dates.length; d++) {
+		var day = items.dates[d];
+		for (var col = 0; col < day.resources.length; col++) {
+			var resource = day.resources[col];
+			columns.push(createColumn(resource, colX, colY, colWidth, 800));
+			colX += colWidth;													
+		}
+	}
+	return columns;	
+}
 
 /*
    Werkwijze: 
@@ -1565,15 +1575,9 @@ var innerX = outerX + labelWidth;
 var innerY = outerY + rowHeight;
 var colX = labelWidth + 0.5;
 var colY = outerY + 2;
-var columns = [];
-for (var d = 0; d < items.dates.length; d++) {
-	var day = items.dates[d];
-	for (var col = 0; col < day.resources.length; col++) {
-		var resource = day.resources[col];
-		columns.push(drawColumn(resource, colX, colY, colWidth, 800));
-		colX += colWidth;													
-	}
-}
+
+var columns = createColumns(items);
+var stage = agenda(1280, 800);
 
 for (var i = 0; i < columns.length; i++) {
 	var elements = columns[i];
