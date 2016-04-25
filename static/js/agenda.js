@@ -1464,6 +1464,7 @@ var createColumn = function(resource, x, y, width, height) {
 	var col = {
 		"header": null,
 		"roosters": [],
+		"borders": [],
 		"afspraken": []
 	};
 
@@ -1492,6 +1493,17 @@ var createColumn = function(resource, x, y, width, height) {
 		col.roosters.push(l);
 	
 	}
+	
+	// Borders
+	var l = new createjs.Shape();
+	l.graphics
+		.setStrokeStyle(0.5)
+		.beginStroke("black")
+		.setStrokeDash([2, 3], 0)
+		.moveTo(x, y)
+		.lineTo(x, height)
+		.endStroke();
+	col.borders.push(l);
 	
 	//Afspraak items	
 	for (var a = 0; a < resource.items.length; a++) {
@@ -1598,6 +1610,9 @@ for (var i = 0; i < columns.length; i++) {
 	stage.addChild(col.header);
 	for (var e = 0; e < col.roosters.length; e++) {
 		stage.addChild(col.roosters[e]);
+	}
+	for (var e = 0; e < col.borders.length; e++) {
+		stage.addChild(col.borders[e]);
 	}
 }
 
