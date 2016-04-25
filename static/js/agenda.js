@@ -1460,12 +1460,13 @@ var afspraakTonen = function(evt) {
 	alert("Afspraak tonen");
 };
 
-var drawColumn = function(stage, resource, x, y, width, height) {
+var drawColumn = function(resource, x, y, width, height) {
+	var column = [];
 	// Kolom label
 	var l = new createjs.Text(resource.key, "14px Verdana", "black");
 	l.x = x + 1.5;
 	l.y = y;
-	stage.addChild(l);
+	column.push(l);
 	// Rooster items
 	for (var s = 0; s < resource.schedule.length; s++) {
 		var schedule = resource.schedule[s];
@@ -1476,14 +1477,14 @@ var drawColumn = function(stage, resource, x, y, width, height) {
 		r.graphics
 			.beginBitmapFill(rasterCanvas(colorFromActivities(schedule.activities)))
 			.rect(x, scheduleY, width, scheduleHeight);
-		stage.addChild(r);
+		column.push(r);
 
 		var l = new createjs.Text(schedule.activities.join(), "11px Verdana", "#5a6d84");
 		l.x = x + 2;
 		l.y = scheduleY + 2;
 		l.lineWidth = width - 2;
 		l.mask = r;
-		stage.addChild(l);
+		column.push(l);
 	
 	}
 	
@@ -1519,8 +1520,9 @@ var drawColumn = function(stage, resource, x, y, width, height) {
 		l.mask = a;
 		
 		group.addChild(a, l);
-		stage.addChild(group);
+		column.push(group);
 	}	
+	return column;
 };
 
 var Label = function Label(width, height, color) {
@@ -1563,12 +1565,20 @@ var innerX = outerX + labelWidth;
 var innerY = outerY + rowHeight;
 var colX = labelWidth + 0.5;
 var colY = outerY + 2;
+var columns = [];
 for (var d = 0; d < items.dates.length; d++) {
 	var day = items.dates[d];
 	for (var col = 0; col < day.resources.length; col++) {
 		var resource = day.resources[col];
-		drawColumn(stage, resource, colX, colY, colWidth, 800);
+		columns.push(drawColumn(resource, colX, colY, colWidth, 800));
 		colX += colWidth;													
+	}
+}
+
+for (var i = 0; i < columns.length; i++) {
+	var elements = columns[i];
+	for (var e = 0; e < elements.length; e++) {
+		stage.addChild(elements[e]);
 	}
 }
 
