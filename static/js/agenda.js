@@ -1461,12 +1461,17 @@ var afspraakTonen = function(evt) {
 };
 
 var createColumn = function(resource, x, y, width, height) {
-	var column = [];
-	// Kolom label
-	var l = new createjs.Text(resource.key, "14px Verdana", "black");
-	l.x = x + 1.5;
-	l.y = y;
-	column.push(l);
+	var col = {
+		"header": null,
+		"roosters": [],
+		"afspraken": []
+	};
+
+	// Kolom header
+	col.header = new createjs.Text(resource.key, "14px Verdana", "black");
+	col.header.x = x + 1.5;
+	col.header.y = y;
+	
 	// Rooster items
 	for (var s = 0; s < resource.schedule.length; s++) {
 		var schedule = resource.schedule[s];
@@ -1477,14 +1482,14 @@ var createColumn = function(resource, x, y, width, height) {
 		r.graphics
 			.beginBitmapFill(rasterCanvas(colorFromActivities(schedule.activities)))
 			.rect(x, scheduleY, width, scheduleHeight);
-		column.push(r);
+		col.roosters.push(r);
 
 		var l = new createjs.Text(schedule.activities.join(), "11px Verdana", "#5a6d84");
 		l.x = x + 2;
 		l.y = scheduleY + 2;
 		l.lineWidth = width - 2;
 		l.mask = r;
-		column.push(l);
+		col.roosters.push(l);
 	
 	}
 	
@@ -1520,9 +1525,9 @@ var createColumn = function(resource, x, y, width, height) {
 		l.mask = a;
 		
 		group.addChild(a, l);
-		column.push(group);
+		col.afspraken.push(group);
 	}	
-	return column;
+	return col;
 };
 
 var Label = function Label(width, height, color) {
@@ -1569,30 +1574,40 @@ var createColumns = function(items) {
    * teken de agenda kaderrand.
 */
 // Lezen JSON
-var outerY = 10.5;	
-var outerX = 10.5;
-var innerX = outerX + labelWidth;
-var innerY = outerY + rowHeight;
+var innerX = labelWidth;
+var innerY = rowHeight;
 var colX = labelWidth + 0.5;
-var colY = outerY + 2;
+var colY = 2;
 
 var columns = createColumns(items);
-var stage = agenda(1280, 800);
 
-for (var i = 0; i < columns.length; i++) {
-	var elements = columns[i];
-	for (var e = 0; e < elements.length; e++) {
-		stage.addChild(elements[e]);
-	}
-}
+var stage = agenda(labelWidth + (columns.length * labelWidth), 800);
 
-//// header verticaal
+// header horizontaal
 h = new createjs.Shape();
 h.graphics
 	.setStrokeStyle(0.5)
 	.beginStroke("black")
 	.beginFill("#C0A0B0")
-	.rect(outerX + 0.5, outerY + 0.5, labelWidth, 779);
+	.rect(labelWidth, 0, 1259, rowHeight);
+stage.addChild(h);
+
+
+for (var i = 0; i < columns.length; i++) {
+	var col = columns[i];
+	stage.addChild(col.header);
+	for (var e = 0; e < col.roosters.length; e++) {
+		stage.addChild(col.roosters[e]);
+	}
+}
+
+// header verticaal
+h = new createjs.Shape();
+h.graphics
+	.setStrokeStyle(0.5)
+	.beginStroke("black")
+	.beginFill("#C0A0B0")
+	.rect(0.5, 0.5, labelWidth, 779);
 stage.addChild(h);
 
 // horizontale lijnen (rij scheiding)
@@ -1609,7 +1624,7 @@ for (var i = 0; i < hours.length; i++) {
 	r = new createjs.Shape();
 	r.graphics
 		.beginFill(background)
-		.rect(outerX + 0.5, y, labelWidth - 1, rowHeight);
+		.rect(0.5, y, labelWidth - 1, rowHeight);
 	stage.addChild(r);
 	if (!hour.officeHours) {
 		r = new createjs.Shape();
@@ -1619,7 +1634,7 @@ for (var i = 0; i < hours.length; i++) {
 		stage.addChild(r);
 	}
 
-	var tijd_x = outerX + 11.5;
+	var tijd_x = 11.5;
 	var tijd_y = y + 4;
 	if (Math.floor(hour.time) == hour.time) {
 		var tijd = hour.time;
@@ -1629,7 +1644,7 @@ for (var i = 0; i < hours.length; i++) {
 	}
 	var font_size = 22;
 	if (tijd == 30) {
-		tijd_x = outerX + 44.5;
+		tijd_x = 44.5;
 		tijd_y++;
 		font_size = 14;
 	}
@@ -1645,7 +1660,7 @@ for (var i = 0; i < hours.length; i++) {
 	stage.addChild(l);
 	if (tijd != 30) {
 		var l = new createjs.Text('00', "14px Verdana", "black");
-		l.x = outerX + 44.5;
+		l.x = 44.5;
 		l.y = ++tijd_y;
 		stage.addChild(l);
 	}
@@ -1654,12 +1669,18 @@ for (var i = 0; i < hours.length; i++) {
 	.setStrokeStyle(1)
 	.beginStroke("black")
 	.setStrokeDash([2, 3], 0)
-    .moveTo(outerX, y)
+    .moveTo(0, y)
     .lineTo(1270, y)
     .endStroke();
     stage.addChild(l);   		
 }
 
+for (var i = 0; i < columns.length; i++) {
+	var col = columns[i];
+	for (var e = 0; e < col.afspraken.length; e++) {
+		stage.addChild(col.afspraken[e]);
+	}
+}
 
 
 var kader = new createjs.Shape();
@@ -1670,14 +1691,6 @@ var kader = new createjs.Shape();
 //	.rect(outerX, outerY, 1260, 780);
 //stage.addChild(kader);
 
-//// header horizontaal
-//h = new createjs.Shape();
-//h.graphics
-//	.setStrokeStyle(0.5)
-//	.beginStroke("black")
-//	.beginFill("#C0A0B0")
-//	.rect(11, 11, 1259, rowHeight);
-//stage.addChild(h);
 
 
 //// verticale lijnen (kolom scheiding)
