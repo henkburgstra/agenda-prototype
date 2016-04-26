@@ -1353,7 +1353,7 @@ var rasterCanvas = function(color) {
 };
 
 var labelWidth = 70;	
-var colWidth = 50;
+var colWidth = 90;
 var rowHeight = 30;	
 var calendarStartTime = '7:30'; // TODO: configureerbaar maken
 var hours = [
@@ -1557,8 +1557,8 @@ var CalendarOptions = function CalendarOptions(startTime, hours, leftLabel, topL
 
 var agenda = function(width, height) {
 	var stage = new createjs.Stage("c");
-	stage.canvas.width = 1280;
-	stage.canvas.height = 800;
+	stage.canvas.width = width;
+	stage.canvas.height = height;
 	return stage;
 };
 
@@ -1568,7 +1568,7 @@ var createColumns = function(items) {
 		var day = items.dates[d];
 		for (var col = 0; col < day.resources.length; col++) {
 			var resource = day.resources[col];
-			columns.push(createColumn(resource, colX, colY, colWidth, 800));
+			columns.push(createColumn(resource, colX, colY, colWidth, 800 - rowHeight));
 			colX += colWidth;													
 		}
 	}
@@ -1592,8 +1592,10 @@ var colX = labelWidth + 0.5;
 var colY = 2;
 
 var columns = createColumns(items);
+var innerWidth = columns.length * colWidth;
+var outerWidth = labelWidth + innerWidth;
 
-var stage = agenda(labelWidth + (columns.length * labelWidth), 800);
+var stage = agenda(outerWidth, 800);
 
 // header horizontaal
 h = new createjs.Shape();
@@ -1601,7 +1603,7 @@ h.graphics
 	.setStrokeStyle(0.5)
 	.beginStroke("black")
 	.beginFill("#C0A0B0")
-	.rect(labelWidth, 0, 1259, rowHeight);
+	.rect(labelWidth, 0, innerWidth, rowHeight);
 stage.addChild(h);
 
 
@@ -1634,7 +1636,7 @@ for (var i = 0; i < hours.length; i++) {
 		r = new createjs.Shape();
 		r.graphics
 			.beginFill("#D4DCEC")
-			.rect(innerX + 1, y, 1189, rowHeight);
+			.rect(innerX + 1, y, outerWidth, rowHeight);
 		stage.addChild(r);
 	}
 
@@ -1674,7 +1676,7 @@ for (var i = 0; i < hours.length; i++) {
 	.beginStroke("black")
 	.setStrokeDash([2, 3], 0)
     .moveTo(0, y)
-    .lineTo(1270, y)
+    .lineTo(outerWidth, y)
     .endStroke();
     stage.addChild(l);   		
 }
