@@ -1605,17 +1605,6 @@ h.graphics
 stage.addChild(h);
 
 
-for (var i = 0; i < columns.length; i++) {
-	var col = columns[i];
-	stage.addChild(col.header);
-	for (var e = 0; e < col.roosters.length; e++) {
-		stage.addChild(col.roosters[e]);
-	}
-	for (var e = 0; e < col.borders.length; e++) {
-		stage.addChild(col.borders[e]);
-	}
-}
-
 // header verticaal
 h = new createjs.Shape();
 h.graphics
@@ -1688,6 +1677,17 @@ for (var i = 0; i < hours.length; i++) {
     .lineTo(1270, y)
     .endStroke();
     stage.addChild(l);   		
+}
+
+for (var i = 0; i < columns.length; i++) {
+	var col = columns[i];
+	stage.addChild(col.header);
+	for (var e = 0; e < col.roosters.length; e++) {
+		stage.addChild(col.roosters[e]);
+	}
+	for (var e = 0; e < col.borders.length; e++) {
+		stage.addChild(col.borders[e]);
+	}
 }
 
 for (var i = 0; i < columns.length; i++) {
