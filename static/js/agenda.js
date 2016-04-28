@@ -1499,7 +1499,7 @@ var createColumn = function(resource, x, y, width, height) {
 	l.graphics
 		.setStrokeStyle(0.5)
 		.beginStroke("black")
-		.setStrokeDash([2, 3], 0)
+//		.setStrokeDash([2, 3], 0)
 		.moveTo(x, y)
 		.lineTo(x, height)
 		.endStroke();
@@ -1594,8 +1594,10 @@ var colY = 2;
 var columns = createColumns(items);
 var innerWidth = columns.length * colWidth;
 var outerWidth = labelWidth + innerWidth;
+var innerHeight = hours.length * rowHeight;
+var outerHeight = innerHeight + rowHeight;
 
-var stage = agenda(outerWidth, 800);
+var stage = agenda(outerWidth, outerHeight);
 
 // header horizontaal
 h = new createjs.Shape();
@@ -1613,7 +1615,7 @@ h.graphics
 	.setStrokeStyle(0.5)
 	.beginStroke("black")
 	.beginFill("#C0A0B0")
-	.rect(0.5, 0.5, labelWidth, 779);
+	.rect(0.5, 0.5, labelWidth, outerHeight);
 stage.addChild(h);
 
 // horizontale lijnen (rij scheiding)
@@ -1699,32 +1701,12 @@ for (var i = 0; i < columns.length; i++) {
 	}
 }
 
-
-var kader = new createjs.Shape();
+//var kader = new createjs.Shape();
 //kader.graphics
 //	.setStrokeStyle(0.5)
 //	.beginStroke("black")
 //	.beginFill("#E0E8F8")
-//	.rect(outerX, outerY, 1260, 780);
+//	.rect(0, 0, outerWidth, outerHeight);
 //stage.addChild(kader);
 
-
-
-//// verticale lijnen (kolom scheiding)
-//var endFirstColX = outerX + labelWidth + colWidth
-//for (var i = 0; i < 20; i++) {
-//	var x = endFirstColX + (colWidth * i);
-//	var l = new createjs.Shape();
-//	l.graphics
-//		.setStrokeStyle(0.5)
-//		.beginStroke("black")
-//		.setStrokeDash([2, 3], 0)
-//		.moveTo(x, outerY)
-//		.lineTo(x, 790.5)
-//		.endStroke();
-//	stage.addChild(l);
-//}
-
-
 stage.update();
-//-------------------------------------------------------------
