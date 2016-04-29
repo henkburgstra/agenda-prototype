@@ -1701,6 +1701,16 @@ for (var i = 0; i < columns.length; i++) {
 	}
 }
 
+var vCursor = stage.addChild(new createjs.Shape());
+vCursor.graphics.beginFill("red").drawRect(-2,-2,labelWidth,2);
+vCursor.alpha = 0.7;
+vCursor.x = 0;
+vCursor.y = rowHeight;
+
+stage.on("stagemousemove", function(evt) {
+	vCursor.y = evt.stageY;
+	stage.update();
+})
 //var kader = new createjs.Shape();
 //kader.graphics
 //	.setStrokeStyle(0.5)
