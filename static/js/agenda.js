@@ -1575,16 +1575,6 @@ var createColumns = function(items) {
 	return columns;	
 }
 
-/*
-   Werkwijze: 
-   * laat ruimte over voor de verticale header 
-   * begin met het tekenen van alle kolommen: drawColumn()
-   * kolommen hebben alleen een *linker* kaderrand
-   * teken de verticale header en de rij lijnen. 
-   * de verticale header heeft *geen* kaderranden
-   * zet de breedte en hoogte van het canvas
-   * teken de agenda kaderrand.
-*/
 // Lezen JSON
 var innerX = labelWidth;
 var innerY = rowHeight;

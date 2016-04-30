@@ -12,3 +12,12 @@ Een persoon heeft één of meerdere rollen
    * zet de breedte en hoogte van het canvas
    * teken de agenda kaderrand.
 */
+
+Scroll Area
+Zie http://jsfiddle.net/lannymcnie/jKuyy/
+
+* Maak een canvas dat even groot is als de client area van de pagina.
+* De agenda moet horizontaal scrollen binnen het canvas
+* Teken eerst de verticale header met de tijden. De verticale header blijft
+  altijd staan.
+* Teken dan de kolommen in een easeljs group. Deze groep moet horizontaal scrollen.
