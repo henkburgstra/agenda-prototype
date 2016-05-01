@@ -126,6 +126,95 @@ var agendaConstructor = function(width, height) {
 		}
 		return columns;	
 	}
+	
+	// horizontalHeader
+	this.horizontalHeader = function() {
+		h = new createjs.Shape();
+		h.graphics
+			.setStrokeStyle(0.5)
+			.beginStroke("black")
+			.beginFill("#C0A0B0")
+			.rect(this.labelWidth, 0, this.innerWidth, this.rowHeight);
+		this.stage.addChild(h);
+	};
+	
+	// verticalHeader
+	this.verticalHeader = function() {
+		h = new createjs.Shape();
+		h.graphics
+			.setStrokeStyle(0.5)
+			.beginStroke("black")
+			.beginFill("#C0A0B0")
+			.rect(0.5, 0.5, this.labelWidth, this.outerHeight);
+		this.stage.addChild(h);		
+	};
+	
+	// horizontalLines
+	this.horizontelLines = function() {
+		for (var i = 0; i < hours.length; i++) {
+			var hour = hours[i];
+			y = innerY + (rowHeight * i);
+		
+			if (hour.officeHours) {
+				var background = '#D0B0C0';
+			}
+			else {
+				var background =  '#C0A0B0';
+			}
+			r = new createjs.Shape();
+			r.graphics
+				.beginFill(background)
+				.rect(0.5, y, labelWidth - 1, rowHeight);
+			stage.addChild(r);
+			if (!hour.officeHours) {
+				r = new createjs.Shape();
+				r.graphics
+					.beginFill("#D4DCEC")
+					.rect(innerX + 1, y, outerWidth, rowHeight);
+				stage.addChild(r);
+			}
+		
+			var tijd_x = 11.5;
+			var tijd_y = y + 4;
+			if (Math.floor(hour.time) == hour.time) {
+				var tijd = hour.time;
+			}
+			else {
+				var tijd = 30;  // TODO: minuten uitrekenen op basis van fractie (fraction2minute)
+			}
+			var font_size = 22;
+			if (tijd == 30) {
+				tijd_x = 44.5;
+				tijd_y++;
+				font_size = 14;
+			}
+			if (tijd < 10) {
+				tijd_tekst = '0' + tijd;
+			}
+			else {
+				tijd_tekst = '' + tijd;
+			}
+			var l = new createjs.Text(tijd_tekst, font_size + "px Verdana", "black");
+			l.x = tijd_x;
+			l.y = tijd_y;
+			stage.addChild(l);
+			if (tijd != 30) {
+				var l = new createjs.Text('00', "14px Verdana", "black");
+				l.x = 44.5;
+				l.y = ++tijd_y;
+				stage.addChild(l);
+			}
+			var l = new createjs.Shape();
+		    l.graphics
+			.setStrokeStyle(1)
+			.beginStroke("black")
+			.setStrokeDash([2, 3], 0)
+		    .moveTo(0, y)
+		    .lineTo(outerWidth, y)
+		    .endStroke();
+		    stage.addChild(l);   		
+		}		
+	};
 
 	// load
 	this.load = function(hours, items) {
@@ -258,91 +347,6 @@ var CalendarOptions = function CalendarOptions(startTime, hours, leftLabel, topL
 };
 
 
-
-
-// header horizontaal
-h = new createjs.Shape();
-h.graphics
-	.setStrokeStyle(0.5)
-	.beginStroke("black")
-	.beginFill("#C0A0B0")
-	.rect(labelWidth, 0, innerWidth, rowHeight);
-stage.addChild(h);
-
-
-// header verticaal
-h = new createjs.Shape();
-h.graphics
-	.setStrokeStyle(0.5)
-	.beginStroke("black")
-	.beginFill("#C0A0B0")
-	.rect(0.5, 0.5, labelWidth, outerHeight);
-stage.addChild(h);
-
-// horizontale lijnen (rij scheiding)
-for (var i = 0; i < hours.length; i++) {
-	var hour = hours[i];
-	y = innerY + (rowHeight * i);
-
-	if (hour.officeHours) {
-		var background = '#D0B0C0';
-	}
-	else {
-		var background =  '#C0A0B0';
-	}
-	r = new createjs.Shape();
-	r.graphics
-		.beginFill(background)
-		.rect(0.5, y, labelWidth - 1, rowHeight);
-	stage.addChild(r);
-	if (!hour.officeHours) {
-		r = new createjs.Shape();
-		r.graphics
-			.beginFill("#D4DCEC")
-			.rect(innerX + 1, y, outerWidth, rowHeight);
-		stage.addChild(r);
-	}
-
-	var tijd_x = 11.5;
-	var tijd_y = y + 4;
-	if (Math.floor(hour.time) == hour.time) {
-		var tijd = hour.time;
-	}
-	else {
-		var tijd = 30;  // TODO: minuten uitrekenen op basis van fractie (fraction2minute)
-	}
-	var font_size = 22;
-	if (tijd == 30) {
-		tijd_x = 44.5;
-		tijd_y++;
-		font_size = 14;
-	}
-	if (tijd < 10) {
-		tijd_tekst = '0' + tijd;
-	}
-	else {
-		tijd_tekst = '' + tijd;
-	}
-	var l = new createjs.Text(tijd_tekst, font_size + "px Verdana", "black");
-	l.x = tijd_x;
-	l.y = tijd_y;
-	stage.addChild(l);
-	if (tijd != 30) {
-		var l = new createjs.Text('00', "14px Verdana", "black");
-		l.x = 44.5;
-		l.y = ++tijd_y;
-		stage.addChild(l);
-	}
-	var l = new createjs.Shape();
-    l.graphics
-	.setStrokeStyle(1)
-	.beginStroke("black")
-	.setStrokeDash([2, 3], 0)
-    .moveTo(0, y)
-    .lineTo(outerWidth, y)
-    .endStroke();
-    stage.addChild(l);   		
-}
 
 for (var i = 0; i < columns.length; i++) {
 	var col = columns[i];
