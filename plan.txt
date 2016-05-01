@@ -14,7 +14,7 @@ Een persoon heeft één of meerdere rollen
 */
 
 Scroll Area
-Zie http://jsfiddle.net/lannymcnie/jKuyy/
+Zie drag.html / drag.js (aangepast van http://jsfiddle.net/lannymcnie/jKuyy/)
 
 * Maak een canvas dat even groot is als de client area van de pagina.
 * De agenda moet horizontaal scrollen binnen het canvas
