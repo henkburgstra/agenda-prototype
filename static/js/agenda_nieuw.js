@@ -150,10 +150,10 @@ var agendaConstructor = function(width, height) {
 	};
 	
 	// horizontalLines
-	this.horizontelLines = function() {
+	this.horizontelLines = function(hours) {
 		for (var i = 0; i < hours.length; i++) {
 			var hour = hours[i];
-			y = innerY + (rowHeight * i);
+			y = this.innerY + (this.rowHeight * i);
 		
 			if (hour.officeHours) {
 				var background = '#D0B0C0';
@@ -164,14 +164,14 @@ var agendaConstructor = function(width, height) {
 			r = new createjs.Shape();
 			r.graphics
 				.beginFill(background)
-				.rect(0.5, y, labelWidth - 1, rowHeight);
-			stage.addChild(r);
+				.rect(0.5, y, this.labelWidth - 1, this.rowHeight);
+			this.stage.addChild(r);
 			if (!hour.officeHours) {
 				r = new createjs.Shape();
 				r.graphics
 					.beginFill("#D4DCEC")
-					.rect(innerX + 1, y, outerWidth, rowHeight);
-				stage.addChild(r);
+					.rect(innerX + 1, y, this.outerWidth, this.rowHeight);
+				this.stage.addChild(r);
 			}
 		
 			var tijd_x = 11.5;
@@ -197,12 +197,12 @@ var agendaConstructor = function(width, height) {
 			var l = new createjs.Text(tijd_tekst, font_size + "px Verdana", "black");
 			l.x = tijd_x;
 			l.y = tijd_y;
-			stage.addChild(l);
+			this.stage.addChild(l);
 			if (tijd != 30) {
 				var l = new createjs.Text('00', "14px Verdana", "black");
 				l.x = 44.5;
 				l.y = ++tijd_y;
-				stage.addChild(l);
+				this.stage.addChild(l);
 			}
 			var l = new createjs.Shape();
 		    l.graphics
@@ -212,7 +212,7 @@ var agendaConstructor = function(width, height) {
 		    .moveTo(0, y)
 		    .lineTo(outerWidth, y)
 		    .endStroke();
-		    stage.addChild(l);   		
+		    this.stage.addChild(l);   		
 		}		
 	};
 
