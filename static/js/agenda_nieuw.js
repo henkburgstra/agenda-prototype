@@ -47,8 +47,8 @@ var agendaConstructor = function(width, height) {
 		// Rooster items
 		for (var s = 0; s < resource.schedule.length; s++) {
 			var schedule = resource.schedule[s];
-			var scheduleY = timeStringToY(schedule.begin) + 0.5;
-			var scheduleHeight = timeStringToY(schedule.end) + 0.5 - scheduleY;
+			var scheduleY = this.timeStringToY(schedule.begin) + 0.5;
+			var scheduleHeight = this.timeStringToY(schedule.end) + 0.5 - scheduleY;
 	
 			r = new createjs.Shape();
 			r.graphics
@@ -85,7 +85,7 @@ var agendaConstructor = function(width, height) {
 			appointment.begin = part1.begin;   // TODO: timeslots (tijdvakken)
 			appointment.end = part1.end;
 			appointment.activity = part2.activity;
-			var appointmentY = timeStringToY(appointment.begin) + 0.5;
+			var appointmentY = this.timeStringToY(appointment.begin) + 0.5;
 			
 			var group = new createjs.Container();
 			group.x = x;
@@ -99,12 +99,12 @@ var agendaConstructor = function(width, height) {
 				.setStrokeStyle(0.5)
 				.beginStroke("#5a6d84")
 				.beginFill("#C0C0FF")
-				.rect(0.5, 0.5, width, timeStringToY(appointment.end) + 0.5 - appointmentY);
+				.rect(0.5, 0.5, width, this.timeStringToY(appointment.end) + 0.5 - appointmentY);
 			
 			var l = new createjs.Text(appointment.activity, "13px Verdana", "#000000");
 			l.x = 3;
 			l.y = 3;
-			l.lineWidth = colWidth - 3;
+			l.lineWidth = this.colWidth - 3;
 			l.mask = a;
 			
 			group.addChild(a, l);
@@ -114,14 +114,14 @@ var agendaConstructor = function(width, height) {
 	};
 
 	// createColumns
-	var createColumns = function(items) {
+	this.createColumns = function(items) {
 		var columns = [];
 		for (var d = 0; d < items.dates.length; d++) {
 			var day = items.dates[d];
 			for (var col = 0; col < day.resources.length; col++) {
 				var resource = day.resources[col];
-				columns.push(createColumn(resource, colX, colY, colWidth, 800 - rowHeight));
-				colX += colWidth;													
+				columns.push(this.createColumn(resource, this.colX, this.colY, this.colWidth, 800 - this.rowHeight));
+				this.colX += this.colWidth;													
 			}
 		}
 		return columns;	
@@ -216,12 +216,19 @@ var agendaConstructor = function(width, height) {
 		}		
 	};
 
+	// timeStringToY
+	this.timeStringToY = function(time) {
+		var minutes = timeStringToMinutes(time);
+		var difference = minutes - timeStringToMinutes(this.calendarStartTime);
+		return this.innerY + ((difference / 30) * this.rowHeight);
+	};
+
 	// load
 	this.load = function(hours, items) {
 		this.columns = this.createColumns(items);
 		this.innerWidth = this.columns.length * this.colWidth;
 		this.outerWidth = this.labelWidth + this.innerWidth;
-		this.innerHeight = this.hours.length * this.rowHeight;
+		this.innerHeight = hours.length * this.rowHeight;
 		this.outerHeight = this.innerHeight + this.rowHeight;
 		
 		for (var i = 0; i < this.columns.length; i++) {
@@ -236,11 +243,30 @@ var agendaConstructor = function(width, height) {
 		}
 		
 		for (var i = 0; i < this.columns.length; i++) {
-			var col = columns[i];
+			var col = this.columns[i];
 			for (var e = 0; e < col.afspraken.length; e++) {
 				this.stage.addChild(col.afspraken[e]);
 			}
 		}
+		var vCursor = this.stage.addChild(new createjs.Shape());
+		vCursor.graphics.beginFill("red").drawRect(-2, -2, this.labelWidth, 2);
+		vCursor.alpha = 0.7;
+		vCursor.x = 0;
+		vCursor.y = this.rowHeight;
+		
+		this.stage.on("stagemousemove", function(evt) {
+			vCursor.y = evt.stageY;
+			this.stage.update();
+		})
+		//var kader = new createjs.Shape();
+		//kader.graphics
+		//	.setStrokeStyle(0.5)
+		//	.beginStroke("black")
+		//	.beginFill("#E0E8F8")
+		//	.rect(0, 0, outerWidth, outerHeight);
+		//stage.addChild(kader);
+		
+		this.stage.update();
 		
 		
 	};
@@ -285,11 +311,6 @@ var timeStringToMinutes = function(time) {
 	return 0;
 };
 
-var timeStringToY = function(time) {
-	var minutes = timeStringToMinutes(time);
-	var difference = minutes - timeStringToMinutes(calendarStartTime);
-	return innerY + ((difference / 30) * rowHeight);
-};
 
 var colors = [];
 colors.push('#8080ff');
@@ -365,25 +386,9 @@ var CalendarOptions = function CalendarOptions(startTime, hours, leftLabel, topL
 	this.topLabel = topLabel;
 };
 
+agenda = new agendaConstructor(1024, 800);
+agenda.load(hours, items);
 
 
 
-var vCursor = stage.addChild(new createjs.Shape());
-vCursor.graphics.beginFill("red").drawRect(-2,-2,labelWidth,2);
-vCursor.alpha = 0.7;
-vCursor.x = 0;
-vCursor.y = rowHeight;
 
-stage.on("stagemousemove", function(evt) {
-	vCursor.y = evt.stageY;
-	stage.update();
-})
-//var kader = new createjs.Shape();
-//kader.graphics
-//	.setStrokeStyle(0.5)
-//	.beginStroke("black")
-//	.beginFill("#E0E8F8")
-//	.rect(0, 0, outerWidth, outerHeight);
-//stage.addChild(kader);
-
-stage.update();
