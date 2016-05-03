@@ -224,6 +224,25 @@ var agendaConstructor = function(width, height) {
 		this.innerHeight = this.hours.length * this.rowHeight;
 		this.outerHeight = this.innerHeight + this.rowHeight;
 		
+		for (var i = 0; i < this.columns.length; i++) {
+			var col = this.columns[i];
+			this.stage.addChild(col.header);
+			for (var e = 0; e < col.roosters.length; e++) {
+				this.stage.addChild(col.roosters[e]);
+			}
+			for (var e = 0; e < col.borders.length; e++) {
+				this.stage.addChild(col.borders[e]);
+			}
+		}
+		
+		for (var i = 0; i < this.columns.length; i++) {
+			var col = columns[i];
+			for (var e = 0; e < col.afspraken.length; e++) {
+				this.stage.addChild(col.afspraken[e]);
+			}
+		}
+		
+		
 	};
 };
 
@@ -348,23 +367,6 @@ var CalendarOptions = function CalendarOptions(startTime, hours, leftLabel, topL
 
 
 
-for (var i = 0; i < columns.length; i++) {
-	var col = columns[i];
-	stage.addChild(col.header);
-	for (var e = 0; e < col.roosters.length; e++) {
-		stage.addChild(col.roosters[e]);
-	}
-	for (var e = 0; e < col.borders.length; e++) {
-		stage.addChild(col.borders[e]);
-	}
-}
-
-for (var i = 0; i < columns.length; i++) {
-	var col = columns[i];
-	for (var e = 0; e < col.afspraken.length; e++) {
-		stage.addChild(col.afspraken[e]);
-	}
-}
 
 var vCursor = stage.addChild(new createjs.Shape());
 vCursor.graphics.beginFill("red").drawRect(-2,-2,labelWidth,2);
