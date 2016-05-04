@@ -386,7 +386,8 @@ var CalendarOptions = function CalendarOptions(startTime, hours, leftLabel, topL
 	this.topLabel = topLabel;
 };
 
-agenda = new agendaConstructor(1024, 800);
+var rect = document.body.getBoundingClientRect();
+agenda = new agendaConstructor(rect.right - rect.left, rect.bottom - rect.top);
 agenda.load(hours, items);
 
 
