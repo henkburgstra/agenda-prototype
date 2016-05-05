@@ -150,7 +150,7 @@ var agendaConstructor = function(width, height) {
 	};
 	
 	// horizontalLines
-	this.horizontelLines = function(hours) {
+	this.horizontalLines = function(hours) {
 		for (var i = 0; i < hours.length; i++) {
 			var hour = hours[i];
 			y = this.innerY + (this.rowHeight * i);
@@ -170,7 +170,7 @@ var agendaConstructor = function(width, height) {
 				r = new createjs.Shape();
 				r.graphics
 					.beginFill("#D4DCEC")
-					.rect(innerX + 1, y, this.outerWidth, this.rowHeight);
+					.rect(this.innerX + 1, y, this.outerWidth, this.rowHeight);
 				this.stage.addChild(r);
 			}
 		
@@ -231,6 +231,8 @@ var agendaConstructor = function(width, height) {
 		this.innerHeight = hours.length * this.rowHeight;
 		this.outerHeight = this.innerHeight + this.rowHeight;
 		
+		this.horizontalLines(hours);
+
 		for (var i = 0; i < this.columns.length; i++) {
 			var col = this.columns[i];
 			this.stage.addChild(col.header);
@@ -241,6 +243,7 @@ var agendaConstructor = function(width, height) {
 				this.stage.addChild(col.borders[e]);
 			}
 		}
+		
 		
 		for (var i = 0; i < this.columns.length; i++) {
 			var col = this.columns[i];
@@ -256,7 +259,6 @@ var agendaConstructor = function(width, height) {
 		
 		this.stage.on("stagemousemove", function(evt) {
 			vCursor.y = evt.stageY;
-			this.stage.update();
 		})
 		//var kader = new createjs.Shape();
 		//kader.graphics
@@ -266,7 +268,6 @@ var agendaConstructor = function(width, height) {
 		//	.rect(0, 0, outerWidth, outerHeight);
 		//stage.addChild(kader);
 		
-		this.stage.update();
 		
 		
 	};
@@ -343,7 +344,6 @@ var afspraakVerplaatsen = function(evt) {
 		var deltaY = evt.stageY - afspraak.dragY;
 		afspraak.x = afspraak.x + deltaX;
 		afspraak.y = afspraak.y + deltaY;
-		stage.update();
 	}
 	else {
 		stage.setChildIndex(afspraak, stage.getNumChildren()-1);
@@ -393,9 +393,11 @@ window.addEventListener("resize", function() {
 	var rect = container.getBoundingClientRect();
 	agenda.stage.canvas.width = rect.right - rect.left;
 	agenda.stage.canvas.height = rect.bottom - rect.top;;
-	agenda.stage.update();	
 });
 agenda.load(hours, items);
+createjs.Ticker.addEventListener("tick", function() {
+	agenda.stage.update();
+});
 
 
 
