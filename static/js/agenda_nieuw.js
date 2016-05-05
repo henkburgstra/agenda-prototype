@@ -231,6 +231,8 @@ var agendaConstructor = function(width, height) {
 		this.innerHeight = hours.length * this.rowHeight;
 		this.outerHeight = this.innerHeight + this.rowHeight;
 		
+		this.horizontalHeader();
+		this.verticalHeader();
 		this.horizontalLines(hours);
 
 		for (var i = 0; i < this.columns.length; i++) {
