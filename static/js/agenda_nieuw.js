@@ -18,6 +18,7 @@ var rasterConstructor = function() {
 var raster = new rasterConstructor();
 
 var agendaConstructor = function(width, height) {
+	var agenda = this;
 	this.stage = new createjs.Stage("c");
 	this.stage.canvas.width = width;
 	this.stage.canvas.height = height;
@@ -91,8 +92,12 @@ var agendaConstructor = function(width, height) {
 			group.x = x;
 			group.y = appointmentY;
 			group.mouseChildren = false;
-			group.on("pressmove", afspraakVerplaatsen);
-			group.on("pressup", afspraakVerplaatst);
+			group.on("pressmove", function(evt) {
+				agenda.afspraakVerplaatsen(evt);
+			});
+			group.on("pressup", function(evt) {
+				agenda.afspraakVerplaatst(evt);					
+			});
 			
 			var a = new createjs.Shape();
 			a.graphics
@@ -268,11 +273,49 @@ var agendaConstructor = function(width, height) {
 		//	.beginStroke("black")
 		//	.beginFill("#E0E8F8")
 		//	.rect(0, 0, outerWidth, outerHeight);
-		//stage.addChild(kader);
-		
+		//stage.addChild(kader);		
 		
 		
 	};
+	// afspraakVerplaatsen	
+	this.afspraakVerplaatsen = function(evt) {
+		// todo: gedeelte van deze code verplaatsen naar press (klikAfspraak)?
+		var afspraak = evt.target
+		if (afspraak.isDragged) {
+			var deltaX = evt.stageX - afspraak.dragX;
+			var deltaY = evt.stageY - afspraak.dragY;
+			afspraak.x = afspraak.x + deltaX;
+			afspraak.y = afspraak.y + deltaY;
+		}
+		else {
+			this.stage.setChildIndex(afspraak, this.stage.getNumChildren() - 1);
+			afspraak.isDragged = true;
+			afspraak.dragStartX = afspraak.x;
+			afspraak.dragStartY = afspraak.y;
+		}
+		afspraak.dragX = evt.stageX;
+		afspraak.dragY = evt.stageY;
+	};
+	
+	// afspraakVerplaatst
+	this.afspraakVerplaatst = function(evt) {
+		// todo: als de x- en y-coördinaat niet zijn gewijzigd,
+		// roep dan afspraakTonen() aan.
+		afspraak = evt.target;
+		afspraak.isDragged = false;
+		if ((afspraak.x != afspraak.dragStartX) || (afspraak.y != afspraak.dragStartY)) {
+			alert("Afspraak verplaatst");
+		}
+		else {
+			this.afspraakTonen(evt);
+		}
+	};
+	
+	// afspraakTonen
+	this.afspraakTonen = function(evt) {
+		alert("Afspraak tonen");
+	};
+
 };
 
 
@@ -337,42 +380,6 @@ for (var i = 0; i < activityCodes.length; i++) {
 		colors.push(color);
 	} 
 }
-
-var afspraakVerplaatsen = function(evt) {
-	// todo: gedeelte van deze code verplaatsen naar press (klikAfspraak)?
-	var afspraak = evt.target
-	if (afspraak.isDragged) {
-		var deltaX = evt.stageX - afspraak.dragX;
-		var deltaY = evt.stageY - afspraak.dragY;
-		afspraak.x = afspraak.x + deltaX;
-		afspraak.y = afspraak.y + deltaY;
-	}
-	else {
-		stage.setChildIndex(afspraak, stage.getNumChildren()-1);
-		afspraak.isDragged = true;
-		afspraak.dragStartX = afspraak.x;
-		afspraak.dragStartY = afspraak.y;
-	}
-	afspraak.dragX = evt.stageX;
-	afspraak.dragY = evt.stageY;
-};
-
-var afspraakVerplaatst = function(evt) {
-	// todo: als de x- en y-coördinaat niet zijn gewijzigd,
-	// roep dan afspraakTonen() aan.
-	afspraak = evt.target;
-	afspraak.isDragged = false;
-	if ((afspraak.x != afspraak.dragStartX) || (afspraak.y != afspraak.dragStartY)) {
-		alert("Afspraak verplaatst");
-	}
-	else {
-		afspraakTonen(evt);
-	}
-};
-
-var afspraakTonen = function(evt) {
-	alert("Afspraak tonen");
-};
 
 
 var Label = function Label(width, height, color) {
