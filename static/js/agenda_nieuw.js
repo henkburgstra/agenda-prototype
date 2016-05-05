@@ -30,6 +30,8 @@ var agendaConstructor = function(width, height) {
 	this.innerY = this.rowHeight;
 	this.colX = this.labelWidth + 0.5;
 	this.colY = 2;
+	this.dragging = false;
+	this.dragY = 0;
 
 	// createColumn
 	this.createColumn = function(resource, x, y, width, height) {
@@ -265,7 +267,12 @@ var agendaConstructor = function(width, height) {
 		vCursor.y = this.rowHeight;
 		
 		this.stage.on("stagemousemove", function(evt) {
-			vCursor.y = evt.stageY;
+			if (agenda.dragging) {
+				vCursor.y = agenda.dragY;
+			}
+			else {
+				vCursor.y = evt.stageY;				
+			}
 		})
 		//var kader = new createjs.Shape();
 		//kader.graphics
@@ -282,10 +289,12 @@ var agendaConstructor = function(width, height) {
 		// todo: gedeelte van deze code verplaatsen naar press (klikAfspraak)?
 		var afspraak = evt.target
 		if (afspraak.isDragged) {
+			this.dragging = true;
 			var deltaX = evt.stageX - afspraak.dragX;
 			var deltaY = evt.stageY - afspraak.dragY;
 			afspraak.x = afspraak.x + deltaX;
 			afspraak.y = afspraak.y + deltaY;
+			this.dragY = afspraak.y;
 		}
 		else {
 			this.stage.setChildIndex(afspraak, this.stage.getNumChildren() - 1);
@@ -304,7 +313,7 @@ var agendaConstructor = function(width, height) {
 		afspraak = evt.target;
 		afspraak.isDragged = false;
 		if ((afspraak.x != afspraak.dragStartX) || (afspraak.y != afspraak.dragStartY)) {
-			alert("Afspraak verplaatst");
+			this.drop(afspraak);
 		}
 		else {
 			this.afspraakTonen(evt);
@@ -315,6 +324,11 @@ var agendaConstructor = function(width, height) {
 	this.afspraakTonen = function(evt) {
 		alert("Afspraak tonen");
 	};
+	
+	this.drop = function(afspraak) {
+		this.dragging = false;
+		alert("Afspraak gedropt.");
+	}
 
 };
 
