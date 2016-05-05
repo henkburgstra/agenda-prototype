@@ -223,12 +223,6 @@ var agendaConstructor = function(width, height) {
 		return this.innerY + ((difference / 30) * this.rowHeight);
 	};
 
-	this.resize = function() {
-		var rect = document.body.getBoundingClientRect();
-		this.stage.canvas.width = 20; //rect.right - rect.left;
-		this.stage.canvas.height = 20; //rect.bottom - rect.top;
-		this.stage.update();
-	};
 	// load
 	this.load = function(hours, items) {
 		this.columns = this.createColumns(items);
@@ -394,7 +388,12 @@ var CalendarOptions = function CalendarOptions(startTime, hours, leftLabel, topL
 
 var rect = document.body.getBoundingClientRect();
 agenda = new agendaConstructor(rect.right - rect.left, rect.bottom - rect.top);
-window.addEventListener("resize", agenda.resize);
+window.addEventListener("resize", function() {
+	var rect = document.body.getBoundingClientRect();
+	agenda.stage.canvas.width = rect.right - rect.left;
+	agenda.stage.canvas.height = 20; //rect.bottom - rect.top;
+	agenda.stage.update();	
+});
 agenda.load(hours, items);
 
 
