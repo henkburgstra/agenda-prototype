@@ -327,6 +327,13 @@ var agendaConstructor = function(width, height) {
 	
 	this.drop = function(afspraak) {
 		this.dragging = false;
+		var x = this.labelWidth;
+		if (afspraak.x > x) {
+			while (afspraak.x > x + this.colWidth) {
+				x += this.colWidth;
+			}
+		}
+		afspraak.x = x;
 		alert("Afspraak gedropt.");
 	}
 
