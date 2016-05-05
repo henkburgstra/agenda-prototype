@@ -386,12 +386,13 @@ var CalendarOptions = function CalendarOptions(startTime, hours, leftLabel, topL
 	this.topLabel = topLabel;
 };
 
-var rect = document.body.getBoundingClientRect();
+var container = document.getElementById('agenda');
+var rect = container.getBoundingClientRect();
 agenda = new agendaConstructor(rect.right - rect.left, rect.bottom - rect.top);
 window.addEventListener("resize", function() {
-	var rect = document.body.getBoundingClientRect();
+	var rect = container.getBoundingClientRect();
 	agenda.stage.canvas.width = rect.right - rect.left;
-	agenda.stage.canvas.height = 20; //rect.bottom - rect.top;
+	agenda.stage.canvas.height = rect.bottom - rect.top;;
 	agenda.stage.update();	
 });
 agenda.load(hours, items);
