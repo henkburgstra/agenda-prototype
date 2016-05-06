@@ -287,7 +287,7 @@ var agendaConstructor = function(width, height) {
 	// afspraakVerplaatsen	
 	this.afspraakVerplaatsen = function(evt) {
 		// todo: gedeelte van deze code verplaatsen naar press (klikAfspraak)?
-		var afspraak = evt.target
+		var afspraak = evt.target;
 		if (afspraak.isDragged) {
 			this.dragging = true;
 			var deltaX = evt.stageX - afspraak.dragX;
@@ -308,15 +308,13 @@ var agendaConstructor = function(width, height) {
 	
 	// afspraakVerplaatst
 	this.afspraakVerplaatst = function(evt) {
-		// todo: als de x- en y-coördinaat niet zijn gewijzigd,
-		// roep dan afspraakTonen() aan.
-		afspraak = evt.target;
+		var afspraak = evt.target;
 		afspraak.isDragged = false;
-		if ((afspraak.x != afspraak.dragStartX) || (afspraak.y != afspraak.dragStartY)) {
-			this.drop(afspraak);
+		if (afspraak.dragStartX == undefined || (afspraak.x == afspraak.dragStartX && afspraak.y == afspraak.dragStartY)) {
+			this.afspraakTonen(evt);
 		}
 		else {
-			this.afspraakTonen(evt);
+			this.drop(afspraak);
 		}
 	};
 	
@@ -327,14 +325,15 @@ var agendaConstructor = function(width, height) {
 	
 	this.drop = function(afspraak) {
 		this.dragging = false;
-		var x = this.labelWidth;
+		var x = this.labelWidth + 0.5;
 		if (afspraak.x > x) {
 			while (afspraak.x > x + this.colWidth) {
 				x += this.colWidth;
 			}
 		}
 		afspraak.x = x;
-		alert("Afspraak gedropt.");
+		afspraak.dragStartX = afspraak.x;
+		afspraak.dragStartY = afspraak.y;
 	}
 
 };
