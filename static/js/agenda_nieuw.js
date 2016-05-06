@@ -22,6 +22,7 @@ var agendaConstructor = function(width, height) {
 	this.stage = new createjs.Stage("c");
 	this.stage.canvas.width = width;
 	this.stage.canvas.height = height;
+	this.stage.enableMouseOver(10);
 	this.scrollarea = null;
 	this.labelWidth = 70;	
 	this.colWidth = 90;
@@ -279,11 +280,37 @@ var agendaConstructor = function(width, height) {
 	};
 	// drawScrollIndicatorRight
 	this.drawScrollIndicatorRight = function() {
-		
+		var indicator = this.stage.addChild(new createjs.Shape());
+		var w = 20;
+		var agenda = this;
+		indicator.graphics.beginFill("black").drawRect(this.stage.canvas.width - w, this.rowHeight, w, this.innerHeight);
+		indicator.alpha = 0.1;
+		indicator.addEventListener("rollover", function() {
+			indicator.alpha = 0.5;
+		});
+		indicator.addEventListener("rollout", function() {
+			indicator.alpha = 0.1;
+		});
+		indicator.addEventListener("click", function() {
+			agenda.scrollLeft();
+		})
 	};
 	// drawScrollIndicatorLeft
 	this.drawScrollIndicatorLeft = function() {
-		
+		var indicator = this.stage.addChild(new createjs.Shape());
+		var w = 20;
+		var agenda = this;
+		indicator.graphics.beginFill("black").drawRect(this.labelWidth, this.rowHeight, w, this.innerHeight);
+		indicator.alpha = 0.1;
+		indicator.addEventListener("rollover", function() {
+			indicator.alpha = 0.5;
+		});
+		indicator.addEventListener("rollout", function() {
+			indicator.alpha = 0.1;
+		});
+		indicator.addEventListener("click", function() {
+			agenda.scrollRight();
+		})
 	};
 
 	// load
