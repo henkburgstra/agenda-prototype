@@ -369,7 +369,8 @@ var agendaConstructor = function(width, height) {
 			this.dragY = afspraak.y;
 		}
 		else {
-			this.stage.setChildIndex(afspraak, this.stage.getNumChildren() - 1);
+			// onderstaande regel "topt" de afspraak.
+			this.scrollarea.setChildIndex(afspraak, this.scrollarea.getNumChildren() - 1);
 			afspraak.isDragged = true;
 			afspraak.dragStartX = afspraak.x;
 			afspraak.dragStartY = afspraak.y;
