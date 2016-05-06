@@ -35,6 +35,18 @@ var agendaConstructor = function(width, height) {
 	this.dragging = false;
 	this.dragY = 0;
 
+	// createVerticalBorder
+	this.createVerticalBorder = function(x, y, height) {
+		var l = new createjs.Shape();
+		l.graphics
+			.setStrokeStyle(0.5)
+			.beginStroke("black")
+			.moveTo(x, y)
+			.lineTo(x, height)
+			.endStroke();
+		return l;
+	};
+	
 	// createColumn
 	this.createColumn = function(resource, x, y, width, height) {
 		var col = {
@@ -70,16 +82,7 @@ var agendaConstructor = function(width, height) {
 		
 		}
 		
-		// Borders
-		var l = new createjs.Shape();
-		l.graphics
-			.setStrokeStyle(0.5)
-			.beginStroke("black")
-	//		.setStrokeDash([2, 3], 0)
-			.moveTo(x, y)
-			.lineTo(x, height)
-			.endStroke();
-		col.borders.push(l);
+		col.borders.push(this.createVerticalBorder(x, y, height));
 		
 		//Afspraak items	
 		for (var a = 0; a < resource.items.length; a++) {
@@ -132,6 +135,10 @@ var agendaConstructor = function(width, height) {
 				var resource = day.resources[col];
 				columns.push(this.createColumn(resource, this.colX, this.colY, this.colWidth, height));
 				this.colX += this.colWidth;													
+			}
+			if (columns.length > 0) {
+				var col = columns[columns.length - 1];
+				col.borders.push(this.createVerticalBorder(this.colX, this.colY, height));
 			}
 		}
 		return columns;	
