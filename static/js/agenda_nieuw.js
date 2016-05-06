@@ -136,8 +136,8 @@ var agendaConstructor = function(width, height) {
 		return columns;	
 	}
 	
-	// horizontalHeader
-	this.horizontalHeader = function() {
+	// drawHorizontalHeader
+	this.drawHorizontalHeader = function() {
 		h = new createjs.Shape();
 		h.graphics
 			.setStrokeStyle(0.5)
@@ -147,8 +147,8 @@ var agendaConstructor = function(width, height) {
 		this.stage.addChild(h);
 	};
 	
-	// verticalHeader
-	this.verticalHeader = function() {
+	// drawVerticalHeader
+	this.drawVerticalHeader = function(hours) {
 		h = new createjs.Shape();
 		h.graphics
 			.setStrokeStyle(0.5)
@@ -156,15 +156,7 @@ var agendaConstructor = function(width, height) {
 			.beginFill("#C0A0B0")
 			.rect(0.5, 0.5, this.labelWidth, this.outerHeight);
 		this.stage.addChild(h);		
-	};
-	
-	// verticalLines
-	this.verticalLines = function(hours) {
-		
-	};
-	
-	// horizontalLines
-	this.horizontalLines = function(hours) {
+
 		for (var i = 0; i < hours.length; i++) {
 			var hour = hours[i];
 			y = this.innerY + (this.rowHeight * i);
@@ -180,13 +172,6 @@ var agendaConstructor = function(width, height) {
 				.beginFill(background)
 				.rect(0.5, y, this.labelWidth - 1, this.rowHeight);
 			this.stage.addChild(r);
-			if (!hour.officeHours) {
-				r = new createjs.Shape();
-				r.graphics
-					.beginFill("#D4DCEC")
-					.rect(this.innerX + 1, y, this.outerWidth, this.rowHeight);
-				this.stage.addChild(r);
-			}
 		
 			var tijd_x = 11.5;
 			var tijd_y = y + 4;
@@ -221,9 +206,35 @@ var agendaConstructor = function(width, height) {
 			var l = new createjs.Shape();
 		    l.graphics
 			.setStrokeStyle(1)
+			.beginStroke("#a88d9a")
+		    .moveTo(0, y)
+		    .lineTo(this.labelWidth, y)
+		    .endStroke();
+		    this.stage.addChild(l);   		
+		}		
+	};
+	
+	
+	// drawHorizontalLines
+	this.drawHorizontalLines = function(hours) {
+		for (var i = 0; i < hours.length; i++) {
+			var hour = hours[i];
+			y = this.innerY + (this.rowHeight * i);
+		
+			if (!hour.officeHours) {
+				r = new createjs.Shape();
+				r.graphics
+					.beginFill("#D4DCEC")
+					.rect(this.innerX + 1, y, this.outerWidth, this.rowHeight);
+				this.stage.addChild(r);
+			}
+		
+			var l = new createjs.Shape();
+		    l.graphics
+			.setStrokeStyle(1)
 			.beginStroke("black")
 			.setStrokeDash([2, 3], 0)
-		    .moveTo(0, y)
+		    .moveTo(this.labelWidth, y)
 		    .lineTo(outerWidth, y)
 		    .endStroke();
 		    this.stage.addChild(l);   		
@@ -258,6 +269,22 @@ var agendaConstructor = function(width, height) {
 			}
 		}		
 	};
+	// scrollLeft
+	this.scrollLeft = function() {
+		this.scrollarea.x = this.scrollarea.x - this.colWidth;
+	};
+	// scrollRight
+	this.scrollRight = function() {
+		this.scrollarea.x = this.scrollarea.x + this.colWidth;
+	};
+	// drawScrollIndicatorRight
+	this.drawScrollIndicatorRight = function() {
+		
+	};
+	// drawScrollIndicatorLeft
+	this.drawScrollIndicatorLeft = function() {
+		
+	};
 
 	// load
 	this.load = function(hours, items) {
@@ -267,13 +294,16 @@ var agendaConstructor = function(width, height) {
 		this.innerHeight = hours.length * this.rowHeight;
 		this.outerHeight = this.innerHeight + this.rowHeight;
 		
-		this.horizontalHeader();
-		this.verticalHeader();
-		this.horizontalLines(hours);
+		this.drawHorizontalHeader();
+		this.drawHorizontalLines(hours);
 		
 		this.scrollarea = new createjs.Container();
 		this.drawColumns();
 		this.stage.addChild(this.scrollarea);
+
+		this.drawVerticalHeader(hours);
+		this.drawScrollIndicatorLeft();
+		this.drawScrollIndicatorRight();
 		
 		var vCursor = this.stage.addChild(new createjs.Shape());
 		vCursor.graphics.beginFill("red").drawRect(-2, -2, this.labelWidth, 2);
