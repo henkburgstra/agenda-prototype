@@ -22,6 +22,7 @@ var agendaConstructor = function(width, height) {
 	this.stage = new createjs.Stage("c");
 	this.stage.canvas.width = width;
 	this.stage.canvas.height = height;
+	this.scrollarea = null;
 	this.labelWidth = 70;	
 	this.colWidth = 90;
 	this.rowHeight = 30;	
@@ -235,6 +236,28 @@ var agendaConstructor = function(width, height) {
 		var difference = minutes - timeStringToMinutes(this.calendarStartTime);
 		return this.innerY + ((difference / 30) * this.rowHeight);
 	};
+	
+	// drawColumns
+	this.drawColumns = function() {
+		for (var i = 0; i < this.columns.length; i++) {
+			var col = this.columns[i];
+			this.scrollarea.addChild(col.header);
+			for (var e = 0; e < col.roosters.length; e++) {
+				this.scrollarea.addChild(col.roosters[e]);
+			}
+			for (var e = 0; e < col.borders.length; e++) {
+				this.scrollarea.addChild(col.borders[e]);
+			}
+		}
+		
+		
+		for (var i = 0; i < this.columns.length; i++) {
+			var col = this.columns[i];
+			for (var e = 0; e < col.afspraken.length; e++) {
+				this.scrollarea.addChild(col.afspraken[e]);
+			}
+		}		
+	};
 
 	// load
 	this.load = function(hours, items) {
@@ -247,25 +270,11 @@ var agendaConstructor = function(width, height) {
 		this.horizontalHeader();
 		this.verticalHeader();
 		this.horizontalLines(hours);
-
-		for (var i = 0; i < this.columns.length; i++) {
-			var col = this.columns[i];
-			this.stage.addChild(col.header);
-			for (var e = 0; e < col.roosters.length; e++) {
-				this.stage.addChild(col.roosters[e]);
-			}
-			for (var e = 0; e < col.borders.length; e++) {
-				this.stage.addChild(col.borders[e]);
-			}
-		}
 		
+		this.scrollarea = new createjs.Container();
+		this.drawColumns();
+		this.stage.addChild(this.scrollarea);
 		
-		for (var i = 0; i < this.columns.length; i++) {
-			var col = this.columns[i];
-			for (var e = 0; e < col.afspraken.length; e++) {
-				this.stage.addChild(col.afspraken[e]);
-			}
-		}
 		var vCursor = this.stage.addChild(new createjs.Shape());
 		vCursor.graphics.beginFill("red").drawRect(-2, -2, this.labelWidth, 2);
 		vCursor.alpha = 0.7;
