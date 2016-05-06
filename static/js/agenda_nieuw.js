@@ -121,13 +121,14 @@ var agendaConstructor = function(width, height) {
 	};
 
 	// createColumns
-	this.createColumns = function(items) {
+	this.createColumns = function(hours, items) {
+		var height = (hours.length + 1) * this.rowHeight;
 		var columns = [];
 		for (var d = 0; d < items.dates.length; d++) {
 			var day = items.dates[d];
 			for (var col = 0; col < day.resources.length; col++) {
 				var resource = day.resources[col];
-				columns.push(this.createColumn(resource, this.colX, this.colY, this.colWidth, 800 - this.rowHeight));
+				columns.push(this.createColumn(resource, this.colX, this.colY, this.colWidth, height));
 				this.colX += this.colWidth;													
 			}
 		}
@@ -154,6 +155,11 @@ var agendaConstructor = function(width, height) {
 			.beginFill("#C0A0B0")
 			.rect(0.5, 0.5, this.labelWidth, this.outerHeight);
 		this.stage.addChild(h);		
+	};
+	
+	// verticalLines
+	this.verticalLines = function(hours) {
+		
 	};
 	
 	// horizontalLines
@@ -232,7 +238,7 @@ var agendaConstructor = function(width, height) {
 
 	// load
 	this.load = function(hours, items) {
-		this.columns = this.createColumns(items);
+		this.columns = this.createColumns(hours, items);
 		this.innerWidth = this.columns.length * this.colWidth;
 		this.outerWidth = this.labelWidth + this.innerWidth;
 		this.innerHeight = hours.length * this.rowHeight;
@@ -401,19 +407,6 @@ for (var i = 0; i < activityCodes.length; i++) {
 	} 
 }
 
-
-var Label = function Label(width, height, color) {
-	self.width = width;
-	self.height = height;
-	self.color = color;
-};
-
-var CalendarOptions = function CalendarOptions(startTime, hours, leftLabel, topLabel) {
-	this.startTime = startTime;
-	this.hours = hours;
-	this.leftLabel = leftLabel;
-	this.topLabel = topLabel;
-};
 
 var container = document.getElementById('agenda');
 var rect = container.getBoundingClientRect();
