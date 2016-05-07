@@ -319,6 +319,10 @@ var agendaConstructor = function(width, height) {
 			agenda.scrollRight();
 		})
 	};
+	
+	this.needHorizontalScrolling = function() {
+		return this.stage.canvas.width < (this.labelWidth + (this.columns.length * this.colWidth));
+	};
 
 	// load
 	this.load = function(hours, items) {
@@ -336,8 +340,10 @@ var agendaConstructor = function(width, height) {
 		this.stage.addChild(this.scrollarea);
 
 		this.drawVerticalHeader(hours);
-		this.drawScrollIndicatorLeft();
-		this.drawScrollIndicatorRight();
+		if (this.needHorizontalScrolling()) {
+			this.drawScrollIndicatorLeft();
+			this.drawScrollIndicatorRight();			
+		}
 		
 		var vCursor = this.stage.addChild(new createjs.Shape());
 		vCursor.graphics.beginFill("red").drawRect(-2, -2, this.labelWidth, 2);
