@@ -97,6 +97,7 @@ var createHScrollbar = function(stage, x, width, height, increment) {
 			this.stage.addChild(this.scrollbar);
 			this.addToStage = false;
 		}
+		this.updateScroller();
 	};
 };
 
@@ -547,7 +548,8 @@ agenda = new agendaConstructor(rect.right - rect.left, rect.bottom - rect.top);
 window.addEventListener("resize", function() {
 	var rect = container.getBoundingClientRect();
 	agenda.stage.canvas.width = rect.right - rect.left;
-	agenda.stage.canvas.height = rect.bottom - rect.top;;
+	agenda.stage.canvas.height = rect.bottom - rect.top;
+	agenda.hScrollbar.update(agenda.stage.canvas.width - agenda.labelWidth, agenda.innerWidth);
 });
 agenda.load(hours, items);
 createjs.Ticker.addEventListener("tick", function() {
