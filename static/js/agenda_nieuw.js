@@ -1,4 +1,8 @@
 reTime = /^([0-9]*)[:.]([0-9]*).*$/;
+var KEY_LEFT = 37,
+   KEY_RIGHT = 39,
+   KEY_UP = 38,
+   KEY_DOWN = 40;
 
 var rasterConstructor = function() {
 	this.rc = document.createElement("canvas");
@@ -388,6 +392,18 @@ var agendaConstructor = function(width, height) {
 				vCursor.y = evt.stageY;				
 			}
 		})
+		var hScrollbar = this.hScrollbar;
+		window.addEventListener("keydown", function(evt) {
+			console.log(evt.keyCode);
+			switch (evt.keyCode) {
+			case KEY_LEFT:
+				hScrollbar.scrollRight();
+				break;
+			case KEY_RIGHT:
+				hScrollbar.scrollLeft();
+				break;
+			}
+		});
 		//var kader = new createjs.Shape();
 		//kader.graphics
 		//	.setStrokeStyle(0.5)
