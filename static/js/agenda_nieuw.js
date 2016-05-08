@@ -61,19 +61,28 @@ var createHScrollbar = function(stage, x, width, height, increment) {
 	});
 	this.updateScroller = function() {
 		var perc = this.position / ((this.virtualWidth - this.scrollbar.width) * 0.01);
-		this.scroller.x = Math.round(this.scrollbar.width * perc * 0.01);
+		var x = Math.round(this.scrollbar.width * perc * 0.01);
+		var maxX = this.scrollbar.width - this.scrollbar.height;
+		if (x > maxX) {
+			x = maxX;
+		}
+		this.scroller.x = x;
 	};
 	// scrollLeft
 	this.scrollLeft = function() {
-		this.scrollarea.x = this.scrollarea.x - this.increment;
-		this.position += this.increment;
-		this.updateScroller();
+		if (this.position < (this.scrollbar.width - this.increment)) {
+			this.scrollarea.x = this.scrollarea.x - this.increment;
+			this.position += this.increment;
+			this.updateScroller();			
+		}
 	};
 	// scrollRight
 	this.scrollRight = function() {
-		this.scrollarea.x = this.scrollarea.x + this.increment;
-		this.position -= this.increment;
-		this.updateScroller();
+		if (this.position > 0) {
+			this.scrollarea.x = this.scrollarea.x + this.increment;
+			this.position -= this.increment;
+			this.updateScroller();			
+		}
 	};
 	this.setBottom = function(y) {
 		this.scrollbar.y = y - this.scrollbar.height;
@@ -394,7 +403,6 @@ var agendaConstructor = function(width, height) {
 		})
 		var hScrollbar = this.hScrollbar;
 		window.addEventListener("keydown", function(evt) {
-			console.log(evt.keyCode);
 			switch (evt.keyCode) {
 			case KEY_LEFT:
 				hScrollbar.scrollRight();
