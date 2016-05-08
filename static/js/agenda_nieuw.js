@@ -349,48 +349,6 @@ var agendaConstructor = function(width, height) {
 			}
 		}		
 	};
-	// scrollLeft
-	this.scrollLeft = function() {
-		this.scrollarea.x = this.scrollarea.x - this.colWidth;
-	};
-	// scrollRight
-	this.scrollRight = function() {
-		this.scrollarea.x = this.scrollarea.x + this.colWidth;
-	};
-	// drawScrollIndicatorRight
-	this.drawScrollIndicatorRight = function() {
-		var indicator = this.stage.addChild(new createjs.Shape());
-		var w = 20;
-		var agenda = this;
-		indicator.graphics.beginFill("black").drawRect(this.stage.canvas.width - w, this.rowHeight, w, this.innerHeight);
-		indicator.alpha = 0.1;
-		indicator.addEventListener("rollover", function() {
-			indicator.alpha = 0.5;
-		});
-		indicator.addEventListener("rollout", function() {
-			indicator.alpha = 0.1;
-		});
-		indicator.addEventListener("click", function() {
-			agenda.scrollLeft();
-		})
-	};
-	// drawScrollIndicatorLeft
-	this.drawScrollIndicatorLeft = function() {
-		var indicator = this.stage.addChild(new createjs.Shape());
-		var w = 20;
-		var agenda = this;
-		indicator.graphics.beginFill("black").drawRect(this.labelWidth, this.rowHeight, w, this.innerHeight);
-		indicator.alpha = 0.1;
-		indicator.addEventListener("rollover", function() {
-			indicator.alpha = 0.5;
-		});
-		indicator.addEventListener("rollout", function() {
-			indicator.alpha = 0.1;
-		});
-		indicator.addEventListener("click", function() {
-			agenda.scrollRight();
-		})
-	};
 	
 	this.needHorizontalScrolling = function() {
 		return this.stage.canvas.width < (this.labelWidth + (this.columns.length * this.colWidth));
@@ -412,10 +370,6 @@ var agendaConstructor = function(width, height) {
 		this.stage.addChild(this.scrollarea);
 
 		this.drawVerticalHeader(hours);
-		if (this.needHorizontalScrolling()) {
-			this.drawScrollIndicatorLeft();
-			this.drawScrollIndicatorRight();			
-		}
 		this.hScrollbar.setScrollarea(this.scrollarea);
 		this.hScrollbar.setBottom(this.outerHeight);
 		this.hScrollbar.update(this.stage.canvas.width - this.labelWidth, this.innerWidth);
