@@ -70,7 +70,7 @@ var createHScrollbar = function(stage, x, width, height, increment) {
 	};
 	// scrollLeft
 	this.scrollLeft = function() {
-		if (this.position < (this.scrollbar.width - this.increment)) {
+		if (this.position < (this.scrollbar.width - this.increment) || true) {
 			this.scrollarea.x = this.scrollarea.x - this.increment;
 			this.position += this.increment;
 			this.updateScroller();			
@@ -91,7 +91,8 @@ var createHScrollbar = function(stage, x, width, height, increment) {
 		this.scrollarea = scrollarea;
 	};
 	this.update = function(width, virtualWidth) {
-		this.width = width;
+		this.scrollbar.width = width;
+		this.bar.width = width;
 		this.virtualWidth = virtualWidth;
 		if (this.addToStage) {
 			this.stage.addChild(this.scrollbar);
@@ -547,9 +548,10 @@ var rect = container.getBoundingClientRect();
 agenda = new agendaConstructor(rect.right - rect.left, rect.bottom - rect.top);
 window.addEventListener("resize", function() {
 	var rect = container.getBoundingClientRect();
-	agenda.stage.canvas.width = rect.right - rect.left;
+	var width = rect.right - rect.left;
+	agenda.stage.canvas.width = width;
 	agenda.stage.canvas.height = rect.bottom - rect.top;
-	agenda.hScrollbar.update(agenda.stage.canvas.width - agenda.labelWidth, agenda.innerWidth);
+	agenda.hScrollbar.update(width, agenda.innerWidth);
 });
 agenda.load(hours, items);
 createjs.Ticker.addEventListener("tick", function() {
