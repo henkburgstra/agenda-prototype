@@ -17,6 +17,76 @@ var rasterConstructor = function() {
 };
 var raster = new rasterConstructor();
 
+var createHScrollbar = function(stage, x, width, height, increment) {
+	this.stage = stage;
+	this.position = 0;
+	this.increment = increment;
+	this.scrollarea = null;
+	this.virtualWidth = 0;
+	this.scrollbar = stage.addChild(new createjs.Container());
+	this.scrollbar.x = x;
+	this.scrollbar.y = stage.canvas.height - height;
+	this.scrollbar.width = width;
+	this.scrollbar.height = height;
+	this.bar = this.scrollbar.addChild(new createjs.Shape());
+	this.bar.graphics.beginFill("black").drawRect(0, 0, this.scrollbar.width, this.scrollbar.height);
+	this.bar.alpha = 0.1;
+	this.scroller = this.scrollbar.addChild(new createjs.Shape());
+	this.scroller.graphics.beginFill("black").drawRect(0, 0, this.scrollbar.height, this.scrollbar.height);
+	this.scroller.alpha = 0.5;
+	this.scroller.width = this.scrollbar.height;
+	this.addToStage = true;
+	parent = this;
+	var bar = this.bar;
+	var scroller = this.scroller;
+	bar.addEventListener("rollover", function() {
+		bar.alpha = 0.5;
+		parent.scroller.alpha = 1;
+	});
+	bar.addEventListener("rollout", function() {
+		bar.alpha = 0.1;
+		parent.scroller.alpha = 0.5;
+	});
+	bar.addEventListener("click", function(evt) {
+		if (evt.localX < scroller.x){
+			parent.scrollRight();
+		}
+		else if (evt.localX > scroller.x + scroller.width) {
+			parent.scrollLeft();
+		}
+	});
+	this.updateScroller = function() {
+		var perc = this.position / ((this.virtualWidth - this.scrollbar.width) * 0.01);
+		this.scroller.x = Math.round(this.scrollbar.width * perc * 0.01);
+	};
+	// scrollLeft
+	this.scrollLeft = function() {
+		this.scrollarea.x = this.scrollarea.x - this.increment;
+		this.position += this.increment;
+		this.updateScroller();
+	};
+	// scrollRight
+	this.scrollRight = function() {
+		this.scrollarea.x = this.scrollarea.x + this.increment;
+		this.position -= this.increment;
+		this.updateScroller();
+	};
+	this.setBottom = function(y) {
+		this.scrollbar.y = y - this.scrollbar.height;
+	};
+	this.setScrollarea = function(scrollarea) {
+		this.scrollarea = scrollarea;
+	};
+	this.update = function(width, virtualWidth) {
+		this.width = width;
+		this.virtualWidth = virtualWidth;
+		if (this.addToStage) {
+			this.stage.addChild(this.scrollbar);
+			this.addToStage = false;
+		}
+	};
+};
+
 var agendaConstructor = function(width, height) {
 	var agenda = this;
 	this.stage = new createjs.Stage("c");
@@ -34,6 +104,8 @@ var agendaConstructor = function(width, height) {
 	this.colY = 2;
 	this.dragging = false;
 	this.dragY = 0;
+	this.hScrollbar = new createHScrollbar(this.stage, this.labelWidth, this.stage.canvas.width - this.labelWidth, 20, this.colWidth);
+	
 
 	// createVerticalBorder
 	this.createVerticalBorder = function(x, y, height) {
@@ -344,6 +416,9 @@ var agendaConstructor = function(width, height) {
 			this.drawScrollIndicatorLeft();
 			this.drawScrollIndicatorRight();			
 		}
+		this.hScrollbar.setScrollarea(this.scrollarea);
+		this.hScrollbar.setBottom(this.outerHeight);
+		this.hScrollbar.update(this.stage.canvas.width - this.labelWidth, this.innerWidth);
 		
 		var vCursor = this.stage.addChild(new createjs.Shape());
 		vCursor.graphics.beginFill("red").drawRect(-2, -2, this.labelWidth, 2);
