@@ -39,7 +39,6 @@ var createHScrollbar = function(stage, x, width, height, increment) {
 	this.scroller.graphics.beginFill("black").drawRect(0, 0, this.scrollbar.height, this.scrollbar.height);
 	this.scroller.alpha = 0.5;
 	this.scroller.width = this.scrollbar.height;
-	this.addToStage = true;
 	parent = this;
 	var bar = this.bar;
 	var scroller = this.scroller;
@@ -94,10 +93,6 @@ var createHScrollbar = function(stage, x, width, height, increment) {
 		this.scrollbar.width = width;
 		this.bar.width = width;
 		this.virtualWidth = virtualWidth;
-		if (this.addToStage) {
-//			this.stage.addChild(this.scrollbar);
-			this.addToStage = false;
-		}
 		this.updateScroller();
 	};
 };
