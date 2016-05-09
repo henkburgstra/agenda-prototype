@@ -325,7 +325,7 @@ var agendaConstructor = function(width, height) {
 			.beginStroke("black")
 			.setStrokeDash([2, 3], 0)
 		    .moveTo(this.labelWidth, y)
-		    .lineTo(outerWidth, y)
+		    .lineTo(this.outerWidth, y)
 		    .endStroke();
 		    this.stage.addChild(l);   		
 		}		
