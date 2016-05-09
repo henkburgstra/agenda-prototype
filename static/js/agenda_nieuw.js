@@ -95,7 +95,7 @@ var createHScrollbar = function(stage, x, width, height, increment) {
 		this.bar.width = width;
 		this.virtualWidth = virtualWidth;
 		if (this.addToStage) {
-			this.stage.addChild(this.scrollbar);
+//			this.stage.addChild(this.scrollbar);
 			this.addToStage = false;
 		}
 		this.updateScroller();
@@ -386,7 +386,7 @@ var agendaConstructor = function(width, height) {
 
 		this.drawVerticalHeader(hours);
 		this.hScrollbar.setScrollarea(this.scrollarea);
-		this.hScrollbar.setBottom(this.outerHeight);
+		this.hScrollbar.setBottom(Math.min(this.outerHeight, this.stage.canvas.height));
 		this.hScrollbar.update(this.stage.canvas.width - this.labelWidth, this.innerWidth);
 		
 		var vCursor = this.stage.addChild(new createjs.Shape());
@@ -551,6 +551,7 @@ window.addEventListener("resize", function() {
 	var width = rect.right - rect.left;
 	agenda.stage.canvas.width = width;
 	agenda.stage.canvas.height = rect.bottom - rect.top;
+	agenda.hScrollbar.setBottom(Math.min(agenda.outerHeight, agenda.stage.canvas.height));
 	agenda.hScrollbar.update(width, agenda.innerWidth);
 });
 agenda.load(hours, items);
