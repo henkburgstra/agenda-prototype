@@ -22,16 +22,6 @@ var rasterConstructor = function() {
 var raster = new rasterConstructor();
 
 var createHScrollbar = function(sb) {
-//	var scrollbar = {
-//		stage: this.stage,
-//		scrollarea: this.scrollarea,
-//	    virtualWidth: this.innerWidth,
-//		x: this.labelWidth,
-//		bottom: Math.min(this.outerHeight, this.stage.canvas.height),
-//		width: this.stage.canvas.width - this.labelWidth,
-//		height: 20,
-//		increment: this.colWidth
-//	};
 	this.sb = sb;
 	this.position = 0;
 	this.scrollbar = sb.stage.addChild(new createjs.Container());
