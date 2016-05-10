@@ -58,7 +58,7 @@ var createHScrollbar = function(sb) {
 	this.updateScroller = function() {
 		var perc = this.position / ((this.sb.virtualWidth - this.sb.width) * 0.01);
 		var x = Math.round(this.sb.width * perc * 0.01);
-		var maxX = this.sb.width - this.sb.height;
+		var maxX = Math.min(this.sb.width, this.sb.stage.canvas.width) - this.sb.height;
 		if (x > maxX) {
 			x = maxX;
 		}
@@ -66,7 +66,7 @@ var createHScrollbar = function(sb) {
 	};
 	// scrollLeft
 	this.scrollLeft = function() {
-		if (this.position < (this.sb.width - this.sb.increment) || true) {
+		if (this.position < this.sb.virtualWidth) {
 			this.sb.scrollarea.x = this.sb.scrollarea.x - this.sb.increment;
 			this.position += this.sb.increment;
 			this.updateScroller();			
