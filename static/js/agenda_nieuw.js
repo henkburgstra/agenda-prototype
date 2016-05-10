@@ -21,24 +21,31 @@ var rasterConstructor = function() {
 };
 var raster = new rasterConstructor();
 
-var createHScrollbar = function(stage, x, width, height, increment) {
-	this.stage = stage;
+var createHScrollbar = function(sb) {
+//	var scrollbar = {
+//		stage: this.stage,
+//		scrollarea: this.scrollarea,
+//	    virtualWidth: this.innerWidth,
+//		x: this.labelWidth,
+//		bottom: Math.min(this.outerHeight, this.stage.canvas.height),
+//		width: this.stage.canvas.width - this.labelWidth,
+//		height: 20,
+//		increment: this.colWidth
+//	};
+	this.sb = sb;
 	this.position = 0;
-	this.increment = increment;
-	this.scrollarea = null;
-	this.virtualWidth = 0;
 	this.scrollbar = stage.addChild(new createjs.Container());
-	this.scrollbar.x = x;
-	this.scrollbar.y = stage.canvas.height - height;
-	this.scrollbar.width = width;
-	this.scrollbar.height = height;
+	this.scrollbar.x = sb.x;
+	this.scrollbar.y = sb.bottom - sb.height;
+	this.scrollbar.width = sb.virtualWidth;
+	this.scrollbar.height = sb.height;
 	this.bar = this.scrollbar.addChild(new createjs.Shape());
-	this.bar.graphics.beginFill("black").drawRect(0, 0, this.scrollbar.width, this.scrollbar.height);
+	this.bar.graphics.beginFill("black").drawRect(0, 0, sb.virtalWidth, sb.height);
 	this.bar.alpha = 0.1;
 	this.scroller = this.scrollbar.addChild(new createjs.Shape());
-	this.scroller.graphics.beginFill("black").drawRect(0, 0, this.scrollbar.height, this.scrollbar.height);
+	this.scroller.graphics.beginFill("black").drawRect(0, 0, sb.height, sb.height);
 	this.scroller.alpha = 0.5;
-	this.scroller.width = this.scrollbar.height;
+	this.scroller.width = sb.height;
 	parent = this;
 	var bar = this.bar;
 	var scroller = this.scroller;
@@ -59,9 +66,9 @@ var createHScrollbar = function(stage, x, width, height, increment) {
 		}
 	});
 	this.updateScroller = function() {
-		var perc = this.position / ((this.virtualWidth - this.scrollbar.width) * 0.01);
-		var x = Math.round(this.scrollbar.width * perc * 0.01);
-		var maxX = this.scrollbar.width - this.scrollbar.height;
+		var perc = this.position / ((this.sb.virtualWidth - this.sb.width) * 0.01);
+		var x = Math.round(this.sb.width * perc * 0.01);
+		var maxX = this.sb.width - this.sb.height;
 		if (x > maxX) {
 			x = maxX;
 		}
@@ -69,7 +76,7 @@ var createHScrollbar = function(stage, x, width, height, increment) {
 	};
 	// scrollLeft
 	this.scrollLeft = function() {
-		if (this.position < (this.scrollbar.width - this.increment) || true) {
+		if (this.position < (this.sb.width - this.increment) || true) {
 			this.scrollarea.x = this.scrollarea.x - this.increment;
 			this.position += this.increment;
 			this.updateScroller();			
@@ -90,8 +97,8 @@ var createHScrollbar = function(stage, x, width, height, increment) {
 		this.scrollarea = scrollarea;
 	};
 	this.update = function(width, virtualWidth) {
-		this.scrollbar.width = width;
-		this.bar.width = width;
+		this.scrollbar.width = virtualWidth;
+		this.bar.width = virtualWidth;
 		this.virtualWidth = virtualWidth;
 		this.updateScroller();
 	};
@@ -113,9 +120,7 @@ var agendaConstructor = function(width, height) {
 	this.colX = this.labelWidth + 0.5;
 	this.colY = 2;
 	this.dragging = false;
-	this.dragY = 0;
-	this.hScrollbar = new createHScrollbar(this.stage, this.labelWidth, this.stage.canvas.width - this.labelWidth, 20, this.colWidth);
-	
+	this.dragY = 0;	
 
 	// createVerticalBorder
 	this.createVerticalBorder = function(x, y, height) {
@@ -380,9 +385,17 @@ var agendaConstructor = function(width, height) {
 		this.stage.addChild(this.scrollarea);
 
 		this.drawVerticalHeader(hours);
-		this.hScrollbar.setScrollarea(this.scrollarea);
-		this.hScrollbar.setBottom(Math.min(this.outerHeight, this.stage.canvas.height));
-		this.hScrollbar.update(this.stage.canvas.width - this.labelWidth, this.innerWidth);
+		var scrollbar = {
+			stage: this.stage,
+			scrollarea: this.scrollarea,
+			virtualWidth: this.innerWidth,
+			x: this.labelWidth,
+			bottom: Math.min(this.outerHeight, this.stage.canvas.height),
+			width: this.stage.canvas.width - this.labelWidth,
+			height: 20,
+			increment: this.colWidth
+		};
+		this.hScrollbar = new createHScrollbar(scrollbar);
 		
 		var vCursor = this.stage.addChild(new createjs.Shape());
 		vCursor.graphics.beginFill("red").drawRect(-2, -2, this.labelWidth, 2);
