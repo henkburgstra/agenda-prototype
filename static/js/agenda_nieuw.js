@@ -34,13 +34,13 @@ var createHScrollbar = function(sb) {
 //	};
 	this.sb = sb;
 	this.position = 0;
-	this.scrollbar = stage.addChild(new createjs.Container());
+	this.scrollbar = sb.stage.addChild(new createjs.Container());
 	this.scrollbar.x = sb.x;
 	this.scrollbar.y = sb.bottom - sb.height;
 	this.scrollbar.width = sb.virtualWidth;
 	this.scrollbar.height = sb.height;
 	this.bar = this.scrollbar.addChild(new createjs.Shape());
-	this.bar.graphics.beginFill("black").drawRect(0, 0, sb.virtalWidth, sb.height);
+	this.bar.graphics.beginFill("black").drawRect(0, 0, sb.virtualWidth, sb.height);
 	this.bar.alpha = 0.1;
 	this.scroller = this.scrollbar.addChild(new createjs.Shape());
 	this.scroller.graphics.beginFill("black").drawRect(0, 0, sb.height, sb.height);
@@ -76,17 +76,17 @@ var createHScrollbar = function(sb) {
 	};
 	// scrollLeft
 	this.scrollLeft = function() {
-		if (this.position < (this.sb.width - this.increment) || true) {
-			this.scrollarea.x = this.scrollarea.x - this.increment;
-			this.position += this.increment;
+		if (this.position < (this.sb.width - this.sb.increment) || true) {
+			this.sb.scrollarea.x = this.sb.scrollarea.x - this.sb.increment;
+			this.position += this.sb.increment;
 			this.updateScroller();			
 		}
 	};
 	// scrollRight
 	this.scrollRight = function() {
 		if (this.position > 0) {
-			this.scrollarea.x = this.scrollarea.x + this.increment;
-			this.position -= this.increment;
+			this.sb.scrollarea.x = this.sb.scrollarea.x + this.sb.increment;
+			this.position -= this.sb.increment;
 			this.updateScroller();			
 		}
 	};
