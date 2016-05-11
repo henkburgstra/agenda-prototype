@@ -66,7 +66,7 @@ var createHScrollbar = function(sb) {
 	};
 	// scrollLeft
 	this.scrollLeft = function() {
-		if (this.position < this.sb.virtualWidth) {
+		if (this.position < (this.sb.virtualWidth - this.sb.width)) {
 			this.sb.scrollarea.x = this.sb.scrollarea.x - this.sb.increment;
 			this.position += this.sb.increment;
 			this.updateScroller();			
@@ -80,16 +80,9 @@ var createHScrollbar = function(sb) {
 			this.updateScroller();			
 		}
 	};
-	this.setBottom = function(y) {
-		this.scrollbar.y = y - this.scrollbar.height;
-	};
-	this.setScrollarea = function(scrollarea) {
-		this.scrollarea = scrollarea;
-	};
-	this.update = function(width, virtualWidth) {
-		this.scrollbar.width = virtualWidth;
-		this.bar.width = virtualWidth;
-		this.virtualWidth = virtualWidth;
+	this.update = function(width, bottom) {
+		this.sb.width = width;
+		this.scrollbar.y = bottom - this.sb.height;
 		this.updateScroller();
 	};
 };
@@ -549,8 +542,9 @@ window.addEventListener("resize", function() {
 	var width = rect.right - rect.left;
 	agenda.stage.canvas.width = width;
 	agenda.stage.canvas.height = rect.bottom - rect.top;
-	agenda.hScrollbar.setBottom(Math.min(agenda.outerHeight, agenda.stage.canvas.height));
-	agenda.hScrollbar.update(width, agenda.innerWidth);
+	agenda.hScrollbar.update(
+		width - agenda.labelWidth,
+		Math.min(agenda.outerHeight, agenda.stage.canvas.height) );
 });
 agenda.load(hours, items);
 createjs.Ticker.addEventListener("tick", function() {
