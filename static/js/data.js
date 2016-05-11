@@ -1,3 +1,14 @@
+var hours = [
+	{time: 7.5, officeHours: false}, {time: 8, officeHours: true}, {time: 8.5, officeHours: true}, 
+	{time: 9, officeHours: true}, {time: 9.5, officeHours: true}, {time: 10, officeHours: true},
+	{time: 10.5, officeHours: true}, {time: 11, officeHours: true}, {time: 11.5, officeHours: true}, 
+	{time: 12, officeHours: false}, {time: 12.5, officeHours: false}, {time: 13, officeHours: true}, 
+	{time: 13.5, officeHours: true}, {time: 14, officeHours: true}, {time: 14.5, officeHours: true},
+	{time: 15, officeHours: true}, {time: 15.5, officeHours: true}, {time: 16, officeHours: true},
+	{time: 16.5, officeHours: true}, {time: 17, officeHours: true}, {time: 17.5, officeHours: true},
+	{time: 18, officeHours: false}
+];
+
 var activities = {
     "AA hb": {
         "code": "AA hb",
