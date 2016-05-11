@@ -67,7 +67,7 @@ var createHScrollbar = function(sb) {
 	// scrollLeft
 	this.scrollLeft = function() {
 		if (this.position < (this.sb.virtualWidth - this.sb.width)) {
-			this.sb.scrollarea.x = this.sb.scrollarea.x - this.sb.increment;
+			this.sb.clientarea.x = this.sb.clientarea.x - this.sb.increment;
 			this.position += this.sb.increment;
 			this.updateScroller();			
 		}
@@ -75,7 +75,7 @@ var createHScrollbar = function(sb) {
 	// scrollRight
 	this.scrollRight = function() {
 		if (this.position > 0) {
-			this.sb.scrollarea.x = this.sb.scrollarea.x + this.sb.increment;
+			this.sb.clientarea.x = this.sb.clientarea.x + this.sb.increment;
 			this.position -= this.sb.increment;
 			this.updateScroller();			
 		}
@@ -133,7 +133,7 @@ var createVScrollbar = function(sb) {
 	// scrollUp
 	this.scrollUp = function() {
 		if (this.position < (this.sb.virtualHeight - this.sb.height)) {
-			this.sb.scrollarea.y = this.sb.scrollarea.y - this.sb.increment;
+			this.sb.clientarea.y = this.sb.clientarea.y - this.sb.increment;
 			this.position += this.sb.increment;
 			this.updateScroller();			
 		}
@@ -141,7 +141,7 @@ var createVScrollbar = function(sb) {
 	// scrollDown
 	this.scrollDown = function() {
 		if (this.position > 0) {
-			this.sb.scrollarea.y = this.sb.scrollarea.y + this.sb.increment;
+			this.sb.clientarea.y = this.sb.clientarea.y + this.sb.increment;
 			this.position -= this.sb.increment;
 			this.updateScroller();			
 		}
@@ -159,7 +159,7 @@ var agendaConstructor = function(width, height) {
 	this.stage.canvas.width = width;
 	this.stage.canvas.height = height;
 	this.stage.enableMouseOver(10);
-	this.scrollarea = null;
+	this.clientarea = null;
 	this.labelWidth = 70;	
 	this.colWidth = 90;
 	this.rowHeight = 30;	
@@ -396,12 +396,12 @@ var agendaConstructor = function(width, height) {
 	this.drawColumns = function() {
 		for (var i = 0; i < this.columns.length; i++) {
 			var col = this.columns[i];
-			this.scrollarea.addChild(col.header);
+			this.clientarea.addChild(col.header);
 			for (var e = 0; e < col.roosters.length; e++) {
-				this.scrollarea.addChild(col.roosters[e]);
+				this.clientarea.addChild(col.roosters[e]);
 			}
 			for (var e = 0; e < col.borders.length; e++) {
-				this.scrollarea.addChild(col.borders[e]);
+				this.clientarea.addChild(col.borders[e]);
 			}
 		}
 		
@@ -409,7 +409,7 @@ var agendaConstructor = function(width, height) {
 		for (var i = 0; i < this.columns.length; i++) {
 			var col = this.columns[i];
 			for (var e = 0; e < col.afspraken.length; e++) {
-				this.scrollarea.addChild(col.afspraken[e]);
+				this.clientarea.addChild(col.afspraken[e]);
 			}
 		}		
 	};
@@ -429,14 +429,14 @@ var agendaConstructor = function(width, height) {
 		this.drawHorizontalHeader();
 		this.drawHorizontalLines(hours);
 		
-		this.scrollarea = new createjs.Container();
+		this.clientarea = new createjs.Container();
 		this.drawColumns();
-		this.stage.addChild(this.scrollarea);
+		this.stage.addChild(this.clientarea);
 
 		this.drawVerticalHeader(hours);
 		var hSB = {
 			stage: this.stage,
-			scrollarea: this.scrollarea,
+			clientarea: this.clientarea,
 			virtualWidth: this.innerWidth,
 			x: this.labelWidth,
 			bottom: Math.min(this.outerHeight, this.stage.canvas.height),
@@ -448,7 +448,7 @@ var agendaConstructor = function(width, height) {
 		
 		var vSB = {
 			stage: this.stage,
-			scrollarea: this.scrollarea,
+			clientarea: this.clientarea,
 			virtualHeight: this.innerHeight,
 			y: this.rowHeight,
 			right: Math.min(this.outerWidth, this.stage.canvas.width),
@@ -514,7 +514,7 @@ var agendaConstructor = function(width, height) {
 		}
 		else {
 			// onderstaande regel "topt" de afspraak.
-			this.scrollarea.setChildIndex(afspraak, this.scrollarea.getNumChildren() - 1);
+			this.clientarea.setChildIndex(afspraak, this.clientarea.getNumChildren() - 1);
 			afspraak.isDragged = true;
 			afspraak.dragStartX = afspraak.x;
 			afspraak.dragStartY = afspraak.y;
