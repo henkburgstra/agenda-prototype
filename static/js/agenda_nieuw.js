@@ -68,6 +68,7 @@ var createHScrollbar = function(sb) {
 	this.scrollLeft = function() {
 		if (this.position < (this.sb.virtualWidth - this.sb.width)) {
 			this.sb.clientarea.x = this.sb.clientarea.x - this.sb.increment;
+			this.sb.horizontalHeader.x = this.sb.horizontalHeader.x - this.sb.increment;
 			this.position += this.sb.increment;
 			this.updateScroller();			
 		}
@@ -76,6 +77,7 @@ var createHScrollbar = function(sb) {
 	this.scrollRight = function() {
 		if (this.position > 0) {
 			this.sb.clientarea.x = this.sb.clientarea.x + this.sb.increment;
+			this.sb.horizontalHeader.x = this.sb.horizontalHeader.x + this.sb.increment;
 			this.position -= this.sb.increment;
 			this.updateScroller();			
 		}
@@ -114,11 +116,11 @@ var createVScrollbar = function(sb) {
 		parent.scroller.alpha = 0.5;
 	});
 	bar.addEventListener("click", function(evt) {
-		if (evt.localX < scroller.x){
-			parent.scrollRight();
+		if (evt.localY < scroller.y){
+			parent.scrollDown();
 		}
-		else if (evt.localX > scroller.x + scroller.width) {
-			parent.scrollLeft();
+		else if (evt.localY > scroller.y + scroller.height) {
+			parent.scrollUp();
 		}
 	});
 	this.updateScroller = function() {
@@ -134,6 +136,7 @@ var createVScrollbar = function(sb) {
 	this.scrollUp = function() {
 		if (this.position < (this.sb.virtualHeight - this.sb.height)) {
 			this.sb.clientarea.y = this.sb.clientarea.y - this.sb.increment;
+			this.sb.verticalHeader.y = this.sb.verticalHeader.y - this.sb.increment;
 			this.position += this.sb.increment;
 			this.updateScroller();			
 		}
@@ -142,6 +145,7 @@ var createVScrollbar = function(sb) {
 	this.scrollDown = function() {
 		if (this.position > 0) {
 			this.sb.clientarea.y = this.sb.clientarea.y + this.sb.increment;
+			this.sb.verticalHeader.y = this.sb.verticalHeader.y + this.sb.increment;
 			this.position -= this.sb.increment;
 			this.updateScroller();			
 		}
@@ -288,7 +292,7 @@ var agendaConstructor = function(width, height) {
 			.beginStroke("black")
 			.beginFill("#C0A0B0")
 			.rect(this.labelWidth, 0, this.innerWidth, this.rowHeight);
-		this.stage.addChild(h);
+		this.horizontalHeader.addChild(h);
 	};
 	
 	// drawVerticalHeader
@@ -299,7 +303,7 @@ var agendaConstructor = function(width, height) {
 			.beginStroke("black")
 			.beginFill("#C0A0B0")
 			.rect(0.5, 0.5, this.labelWidth, this.outerHeight);
-		this.stage.addChild(h);		
+		this.verticalHeader.addChild(h);		
 
 		for (var i = 0; i < hours.length; i++) {
 			var hour = hours[i];
@@ -315,7 +319,7 @@ var agendaConstructor = function(width, height) {
 			r.graphics
 				.beginFill(background)
 				.rect(0.5, y, this.labelWidth - 1, this.rowHeight);
-			this.stage.addChild(r);
+			this.verticalHeader.addChild(r);
 		
 			var tijd_x = 11.5;
 			var tijd_y = y + 4;
@@ -340,12 +344,12 @@ var agendaConstructor = function(width, height) {
 			var l = new createjs.Text(tijd_tekst, font_size + "px Verdana", "black");
 			l.x = tijd_x;
 			l.y = tijd_y;
-			this.stage.addChild(l);
+			this.verticalHeader.addChild(l);
 			if (tijd != 30) {
 				var l = new createjs.Text('00', "14px Verdana", "black");
 				l.x = 44.5;
 				l.y = ++tijd_y;
-				this.stage.addChild(l);
+				this.verticalHeader.addChild(l);
 			}
 			var l = new createjs.Shape();
 		    l.graphics
@@ -354,7 +358,7 @@ var agendaConstructor = function(width, height) {
 		    .moveTo(0, y)
 		    .lineTo(this.labelWidth, y)
 		    .endStroke();
-		    this.stage.addChild(l);   		
+		    this.verticalHeader.addChild(l);   		
 		}		
 	};
 	
@@ -396,7 +400,7 @@ var agendaConstructor = function(width, height) {
 	this.drawColumns = function() {
 		for (var i = 0; i < this.columns.length; i++) {
 			var col = this.columns[i];
-			this.clientarea.addChild(col.header);
+			this.horizontalHeader.addChild(col.header);
 			for (var e = 0; e < col.roosters.length; e++) {
 				this.clientarea.addChild(col.roosters[e]);
 			}
@@ -426,17 +430,20 @@ var agendaConstructor = function(width, height) {
 		this.innerHeight = hours.length * this.rowHeight;
 		this.outerHeight = this.innerHeight + this.rowHeight;
 		
+		this.horizontalHeader = new createjs.Container();
 		this.drawHorizontalHeader();
 		this.drawHorizontalLines(hours);
 		
-		this.clientarea = new createjs.Container();
+		this.clientarea = this.stage.addChild(new createjs.Container());
 		this.drawColumns();
-		this.stage.addChild(this.clientarea);
 
+		this.stage.addChild(this.horizontalHeader);
+		this.verticalHeader = this.stage.addChild(new createjs.Container());
 		this.drawVerticalHeader(hours);
 		var hSB = {
 			stage: this.stage,
 			clientarea: this.clientarea,
+			horizontalHeader: this.horizontalHeader,
 			virtualWidth: this.innerWidth,
 			x: this.labelWidth,
 			bottom: Math.min(this.outerHeight, this.stage.canvas.height),
@@ -449,6 +456,7 @@ var agendaConstructor = function(width, height) {
 		var vSB = {
 			stage: this.stage,
 			clientarea: this.clientarea,
+			verticalHeader: this.verticalHeader,
 			virtualHeight: this.innerHeight,
 			y: this.rowHeight,
 			right: Math.min(this.outerWidth, this.stage.canvas.width),
