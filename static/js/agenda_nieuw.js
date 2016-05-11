@@ -36,7 +36,7 @@ var createHScrollbar = function(sb) {
 	this.scroller.graphics.beginFill("black").drawRect(0, 0, sb.height, sb.height);
 	this.scroller.alpha = 0.5;
 	this.scroller.width = sb.height;
-	parent = this;
+	var parent = this;
 	var bar = this.bar;
 	var scroller = this.scroller;
 	bar.addEventListener("rollover", function() {
@@ -83,6 +83,72 @@ var createHScrollbar = function(sb) {
 	this.update = function(width, bottom) {
 		this.sb.width = width;
 		this.scrollbar.y = bottom - this.sb.height;
+		this.updateScroller();
+	};
+};
+
+var createVScrollbar = function(sb) {
+	this.sb = sb;
+	this.position = 0;
+	this.scrollbar = sb.stage.addChild(new createjs.Container());
+	this.scrollbar.x = sb.right - sb.width;
+	this.scrollbar.y = sb.y;
+	this.scrollbar.width = sb.width;
+	this.scrollbar.height = sb.virtualHeight;
+	this.bar = this.scrollbar.addChild(new createjs.Shape());
+	this.bar.graphics.beginFill("black").drawRect(0, 0, sb.width, sb.virtualHeight);
+	this.bar.alpha = 0.1;
+	this.scroller = this.scrollbar.addChild(new createjs.Shape());
+	this.scroller.graphics.beginFill("black").drawRect(0, 0, sb.width, sb.width);
+	this.scroller.alpha = 0.5;
+	this.scroller.width = sb.width;
+	var parent = this;
+	var bar = this.bar;
+	var scroller = this.scroller;
+	bar.addEventListener("rollover", function() {
+		bar.alpha = 0.5;
+		parent.scroller.alpha = 1;
+	});
+	bar.addEventListener("rollout", function() {
+		bar.alpha = 0.1;
+		parent.scroller.alpha = 0.5;
+	});
+	bar.addEventListener("click", function(evt) {
+		if (evt.localX < scroller.x){
+			parent.scrollRight();
+		}
+		else if (evt.localX > scroller.x + scroller.width) {
+			parent.scrollLeft();
+		}
+	});
+	this.updateScroller = function() {
+		var perc = this.position / ((this.sb.virtualHeight - this.sb.height) * 0.01);
+		var y = Math.round(this.sb.height * perc * 0.01);
+		var maxY = Math.min(this.sb.height, this.sb.stage.canvas.height) - this.sb.width;
+		if (y > maxY) {
+			y = maxY;
+		}
+		this.scroller.y = y;
+	};
+	// scrollUp
+	this.scrollUp = function() {
+		if (this.position < (this.sb.virtualHeight - this.sb.height)) {
+			this.sb.scrollarea.y = this.sb.scrollarea.y - this.sb.increment;
+			this.position += this.sb.increment;
+			this.updateScroller();			
+		}
+	};
+	// scrollDown
+	this.scrollDown = function() {
+		if (this.position > 0) {
+			this.sb.scrollarea.y = this.sb.scrollarea.y + this.sb.increment;
+			this.position -= this.sb.increment;
+			this.updateScroller();			
+		}
+	};
+	this.update = function(height, right) {
+		this.sb.height = height;
+		this.scrollbar.x = right - this.sb.width;
 		this.updateScroller();
 	};
 };
@@ -368,7 +434,7 @@ var agendaConstructor = function(width, height) {
 		this.stage.addChild(this.scrollarea);
 
 		this.drawVerticalHeader(hours);
-		var scrollbar = {
+		var hSB = {
 			stage: this.stage,
 			scrollarea: this.scrollarea,
 			virtualWidth: this.innerWidth,
@@ -378,7 +444,19 @@ var agendaConstructor = function(width, height) {
 			height: 20,
 			increment: this.colWidth
 		};
-		this.hScrollbar = new createHScrollbar(scrollbar);
+		this.hScrollbar = new createHScrollbar(hSB);
+		
+		var vSB = {
+			stage: this.stage,
+			scrollarea: this.scrollarea,
+			virtualHeight: this.innerHeight,
+			y: this.rowHeight,
+			right: Math.min(this.outerWidth, this.stage.canvas.width),
+			height: this.stage.canvas.height - this.rowHeight,
+			width: 20,
+			increment: this.colWidth
+		};
+		this.vScrollbar = new createVScrollbar(vSB);
 		
 		var vCursor = this.stage.addChild(new createjs.Shape());
 		vCursor.graphics.beginFill("red").drawRect(-2, -2, this.labelWidth, 2);
@@ -395,6 +473,7 @@ var agendaConstructor = function(width, height) {
 			}
 		})
 		var hScrollbar = this.hScrollbar;
+		var vScrollbar = this.vScrollbar;
 		window.addEventListener("keydown", function(evt) {
 			switch (evt.keyCode) {
 			case KEY_LEFT:
@@ -402,6 +481,12 @@ var agendaConstructor = function(width, height) {
 				break;
 			case KEY_RIGHT:
 				hScrollbar.scrollLeft();
+				break;
+			case KEY_UP:
+				vScrollbar.scrollDown();
+				break;
+			case KEY_DOWN:
+				vScrollbar.scrollUp();
 				break;
 			}
 		});
@@ -540,11 +625,15 @@ agenda = new agendaConstructor(rect.right - rect.left, rect.bottom - rect.top);
 window.addEventListener("resize", function() {
 	var rect = container.getBoundingClientRect();
 	var width = rect.right - rect.left;
+	var height = rect.bottom - rect.top;
 	agenda.stage.canvas.width = width;
-	agenda.stage.canvas.height = rect.bottom - rect.top;
+	agenda.stage.canvas.height = height;
 	agenda.hScrollbar.update(
 		width - agenda.labelWidth,
-		Math.min(agenda.outerHeight, agenda.stage.canvas.height) );
+		Math.min(agenda.outerHeight, agenda.stage.canvas.height));
+	agenda.vScrollbar.update(
+		height - agenda.rowHeight,
+		Math.min(agenda.outerWidth, agenda.stage.canvas.width));
 });
 agenda.load(hours, items);
 createjs.Ticker.addEventListener("tick", function() {
