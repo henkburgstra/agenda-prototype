@@ -119,7 +119,7 @@ var createVScrollbar = function(sb) {
 		if (evt.localY < scroller.y){
 			parent.scrollDown();
 		}
-		else if (evt.localY > scroller.y + scroller.height) {
+		else if (evt.localY > scroller.y + scroller.width) {
 			parent.scrollUp();
 		}
 	});
