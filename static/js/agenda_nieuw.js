@@ -431,15 +431,25 @@ var agendaConstructor = function(width, height) {
 		this.outerHeight = this.innerHeight + this.rowHeight;
 		
 		this.horizontalHeader = new createjs.Container();
+		this.verticalHeader = new createjs.Container();
+		this.clientarea = new createjs.Container();
+		this.schedules = new createjs.Container();
+		this.grid = new createjs.Container();
+		this.appointments = new createjs.Container();
+
 		this.drawHorizontalHeader();
 		this.drawHorizontalLines(hours);
 		
-		this.clientarea = this.stage.addChild(new createjs.Container());
 		this.drawColumns();
-
-		this.stage.addChild(this.horizontalHeader);
-		this.verticalHeader = this.stage.addChild(new createjs.Container());
 		this.drawVerticalHeader(hours);
+
+		this.clientarea.addChild(this.schedules);
+		this.clientarea.addChild(this.grid);
+		this.clientarea.addChild(this.appointments);
+		this.stage.addChild(this.clientarea);
+		this.stage.addChild(this.horizontalHeader);
+		this.stage.addChild(this.verticalHeader);
+		
 		var hSB = {
 			stage: this.stage,
 			clientarea: this.clientarea,
