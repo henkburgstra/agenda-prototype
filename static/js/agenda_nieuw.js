@@ -229,6 +229,15 @@ var agendaConstructor = function(width, height) {
 			appointment.begin = part1.begin;   // TODO: timeslots (tijdvakken)
 			appointment.end = part1.end;
 			appointment.activity = part2.activity;
+			var activity = activities[part2.activity];
+			if (activity == undefined) {
+				appointment.color = '#C0C0FF';
+				appointment.description = part2.activity;
+			} 
+			else {
+				appointment.color = activity.color;
+				appointment.description = activity.description;
+			}
 			var appointmentY = this.timeStringToY(appointment.begin) + 0.5;
 			
 			var group = new createjs.Container();
@@ -246,10 +255,10 @@ var agendaConstructor = function(width, height) {
 			a.graphics
 				.setStrokeStyle(0.5)
 				.beginStroke("#5a6d84")
-				.beginFill("#C0C0FF")
+				.beginFill(appointment.color)
 				.rect(0.5, 0.5, width, this.timeStringToY(appointment.end) + 0.5 - appointmentY);
 			
-			var l = new createjs.Text(appointment.activity, "13px Verdana", "#000000");
+			var l = new createjs.Text(appointment.description, "13px Verdana", "#000000");
 			l.x = 3;
 			l.y = 3;
 			l.lineWidth = this.colWidth - 3;

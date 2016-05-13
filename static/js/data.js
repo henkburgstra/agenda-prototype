@@ -318,13 +318,13 @@ var items = {
 			pattern: 'daily',
 			begin: '2014-01-01',
 			end: '2014-01-01',
-			activity: 'brief' 
+			activity: 'BERA kind' 
 		},
 		g2: {
 			pattern: 'weekly',
 			begin: '2014-01-01',
 			end: '2014-02-01',
-			activity: 'afov'
+			activity: 'spoedplek'
 		}
 	},
 	appointments: {
