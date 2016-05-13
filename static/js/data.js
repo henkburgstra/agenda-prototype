@@ -333,6 +333,12 @@ var items = {
 			"begin": '10:00',
 			end: '12:00',
 			group: 'g1'
+		},
+		ACTB_23456: {
+			type: 'client-meeting',
+			"begin": '14:15',
+			end: '17:30',
+			group: 'g2'
 		}
 		
 	},
@@ -413,7 +419,7 @@ var items = {
                             "end": "12:30"
                         }
                     ],
-                    "items": ['ACTB_12345']
+                    "items": ['ACTB_23456']
                 },
                 {
                     "key": "AR",

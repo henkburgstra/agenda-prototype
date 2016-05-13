@@ -195,6 +195,7 @@ var agendaConstructor = function(width, height) {
 		header.x = x + 1.5;
 		header.y = y;
 		this.horizontalHeader.addChild(header);
+		this.horizontalHeader.addChild(this.createVerticalBorder(x + this.colWidth, y, y + this.rowHeight));
 		
 		// Rooster items
 		for (var s = 0; s < resource.schedule.length; s++) {
@@ -217,7 +218,7 @@ var agendaConstructor = function(width, height) {
 		
 		}
 		
-		this.grid.addChild(this.createVerticalBorder(x, y, height));
+		this.grid.addChild(this.createVerticalBorder(x + this.colWidth, y + this.rowHeight, height));
 		
 		//Afspraak items	
 		for (var a = 0; a < resource.items.length; a++) {
