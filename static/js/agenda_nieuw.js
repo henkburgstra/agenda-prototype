@@ -159,6 +159,7 @@ var createVScrollbar = function(sb) {
 
 var agendaConstructor = function(width, height) {
 	var agenda = this;
+	this.colcount = 0;
 	this.stage = new createjs.Stage("c");
 	this.stage.canvas.width = width;
 	this.stage.canvas.height = height;
@@ -189,17 +190,11 @@ var agendaConstructor = function(width, height) {
 	
 	// createColumn
 	this.createColumn = function(resource, x, y, width, height) {
-		var col = {
-			"header": null,
-			"roosters": [],
-			"borders": [],
-			"afspraken": []
-		};
-	
 		// Kolom header
-		col.header = new createjs.Text(resource.key, "14px Verdana", "black");
-		col.header.x = x + 1.5;
-		col.header.y = y;
+		var header = new createjs.Text(resource.key, "14px Verdana", "black");
+		header.x = x + 1.5;
+		header.y = y;
+		this.horizontalHeader.addChild(header);
 		
 		// Rooster items
 		for (var s = 0; s < resource.schedule.length; s++) {
@@ -211,18 +206,18 @@ var agendaConstructor = function(width, height) {
 			r.graphics
 				.beginBitmapFill(raster.create(colorFromActivities(schedule.activities)))
 				.rect(x, scheduleY, width, scheduleHeight);
-			col.roosters.push(r);
+			this.schedules.addChild(r);
 	
 			var l = new createjs.Text(schedule.activities.join(), "11px Verdana", "#5a6d84");
 			l.x = x + 2;
 			l.y = scheduleY + 2;
 			l.lineWidth = width - 2;
 			l.mask = r;
-			col.roosters.push(l);
+			this.schedules.addChild(l);
 		
 		}
 		
-		col.borders.push(this.createVerticalBorder(x, y, height));
+		this.grid.addChild(this.createVerticalBorder(x, y, height));
 		
 		//Afspraak items	
 		for (var a = 0; a < resource.items.length; a++) {
@@ -260,11 +255,20 @@ var agendaConstructor = function(width, height) {
 			l.mask = a;
 			
 			group.addChild(a, l);
-			col.afspraken.push(group);
+			this.appointments.addChild(group);
 		}	
-		return col;
 	};
 
+	// getColcount
+	this.getColcount = function(items) {
+		var count = 0;
+		for (var d = 0; d < items.dates.length; d++) {
+			var day = items.dates[d];
+			count += day.resources.length;
+		}
+		return count;
+	};
+	
 	// createColumns
 	this.createColumns = function(hours, items) {
 		var height = (hours.length + 1) * this.rowHeight;
@@ -273,19 +277,18 @@ var agendaConstructor = function(width, height) {
 			var day = items.dates[d];
 			for (var col = 0; col < day.resources.length; col++) {
 				var resource = day.resources[col];
-				columns.push(this.createColumn(resource, this.colX, this.colY, this.colWidth, height));
+				this.createColumn(resource, this.colX, this.colY, this.colWidth, height);
 				this.colX += this.colWidth;													
 			}
-			if (columns.length > 0) {
-				var col = columns[columns.length - 1];
-				col.borders.push(this.createVerticalBorder(this.colX, this.colY, height));
-			}
+//			if (columns.length > 0) {
+//				var col = columns[columns.length - 1];
+//				this.grid.addChild(this.createVerticalBorder(this.colX, this.colY, height));
+//			}
 		}
-		return columns;	
 	}
 	
-	// drawHorizontalHeader
-	this.drawHorizontalHeader = function() {
+	// createHorizontalHeader
+	this.createHorizontalHeader = function() {
 		h = new createjs.Shape();
 		h.graphics
 			.setStrokeStyle(0.5)
@@ -295,8 +298,8 @@ var agendaConstructor = function(width, height) {
 		this.horizontalHeader.addChild(h);
 	};
 	
-	// drawVerticalHeader
-	this.drawVerticalHeader = function(hours) {
+	// createVerticalHeader
+	this.createVerticalHeader = function(hours) {
 		h = new createjs.Shape();
 		h.graphics
 			.setStrokeStyle(0.5)
@@ -363,8 +366,8 @@ var agendaConstructor = function(width, height) {
 	};
 	
 	
-	// drawHorizontalLines
-	this.drawHorizontalLines = function(hours) {
+	// createHorizontalLines
+	this.createHorizontalLines = function(hours) {
 		for (var i = 0; i < hours.length; i++) {
 			var hour = hours[i];
 			y = this.innerY + (this.rowHeight * i);
@@ -374,7 +377,7 @@ var agendaConstructor = function(width, height) {
 				r.graphics
 					.beginFill("#D4DCEC")
 					.rect(this.innerX + 1, y, this.outerWidth, this.rowHeight);
-				this.stage.addChild(r);
+				this.clientarea.addChild(r);
 			}
 		
 			var l = new createjs.Shape();
@@ -385,7 +388,7 @@ var agendaConstructor = function(width, height) {
 		    .moveTo(this.labelWidth, y)
 		    .lineTo(this.outerWidth, y)
 		    .endStroke();
-		    this.stage.addChild(l);   		
+		    this.grid.addChild(l);   		
 		}		
 	};
 
@@ -396,36 +399,14 @@ var agendaConstructor = function(width, height) {
 		return this.innerY + ((difference / 30) * this.rowHeight);
 	};
 	
-	// drawColumns
-	this.drawColumns = function() {
-		for (var i = 0; i < this.columns.length; i++) {
-			var col = this.columns[i];
-			this.horizontalHeader.addChild(col.header);
-			for (var e = 0; e < col.roosters.length; e++) {
-				this.clientarea.addChild(col.roosters[e]);
-			}
-			for (var e = 0; e < col.borders.length; e++) {
-				this.clientarea.addChild(col.borders[e]);
-			}
-		}
-		
-		
-		for (var i = 0; i < this.columns.length; i++) {
-			var col = this.columns[i];
-			for (var e = 0; e < col.afspraken.length; e++) {
-				this.clientarea.addChild(col.afspraken[e]);
-			}
-		}		
-	};
-	
 	this.needHorizontalScrolling = function() {
-		return this.stage.canvas.width < (this.labelWidth + (this.columns.length * this.colWidth));
+		return this.stage.canvas.width < (this.labelWidth + (this.colcount * this.colWidth));
 	};
 
 	// load
 	this.load = function(hours, items) {
-		this.columns = this.createColumns(hours, items);
-		this.innerWidth = this.columns.length * this.colWidth;
+		this.colcount = this.getColcount(items);
+		this.innerWidth = this.colcount * this.colWidth;
 		this.outerWidth = this.labelWidth + this.innerWidth;
 		this.innerHeight = hours.length * this.rowHeight;
 		this.outerHeight = this.innerHeight + this.rowHeight;
@@ -437,16 +418,15 @@ var agendaConstructor = function(width, height) {
 		this.grid = new createjs.Container();
 		this.appointments = new createjs.Container();
 
-		this.drawHorizontalHeader();
-		this.drawHorizontalLines(hours);
-		
-		this.drawColumns();
-		this.drawVerticalHeader(hours);
+		this.createHorizontalHeader();
+		this.createHorizontalLines(hours);		
+		this.createVerticalHeader(hours);
+		this.createColumns(hours, items);
 
+		this.stage.addChild(this.clientarea);
 		this.clientarea.addChild(this.schedules);
 		this.clientarea.addChild(this.grid);
 		this.clientarea.addChild(this.appointments);
-		this.stage.addChild(this.clientarea);
 		this.stage.addChild(this.horizontalHeader);
 		this.stage.addChild(this.verticalHeader);
 		
