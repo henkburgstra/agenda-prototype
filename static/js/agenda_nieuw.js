@@ -440,7 +440,7 @@ var agendaConstructor = function(width, height) {
 			right: Math.min(this.outerWidth, this.stage.canvas.width),
 			height: this.stage.canvas.height - this.rowHeight,
 			width: 20,
-			increment: this.colWidth
+			increment: this.rowHeight
 		};
 		this.vScrollbar = new createVScrollbar(vSB);
 		
